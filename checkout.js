@@ -194,14 +194,10 @@ function validate(refid, ip) {
 		addr1 = shipping_line1;
 		addr2 = shipping_line2;
 
-		accountnum = document.getElementById("accountnum").value;
-		email = document.getElementById("emailaddr").value;
-
 		phone = document.getElementById("phone").value;
 		phonecountry = countryPhoneSelect.options[countryPhoneSelect.selectedIndex].value;
 		phonenumber = phonecountry + "-" + phone;
 
-		total_amt = grandtotal;
 
 		if(stopsubmit){
 			alert(emptyfields);
@@ -216,7 +212,7 @@ function validate(refid, ip) {
 }
 
 
-//from https://stackoverflow.com/questions/3937513/javascript-validation-for-empty-input-field
+
 function isEmpty(str) {
     return !str.trim().length;
 }
@@ -224,11 +220,8 @@ function isEmpty(str) {
 
 function spawnshipaddr(jsonurl){
 
-  //for multiple checkboxes, uses getElementsByClassName https://stackoverflow.com/questions/11599666/get-the-value-of-checked-checkbox
-
   var diffaddr = document.getElementById('diffaddr');
   var shippingform = "";
-  var country = "US";
   var state = "AZ";
 
 
