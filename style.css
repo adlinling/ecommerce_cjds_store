@@ -1,0 +1,494 @@
+body
+{
+    background-color:#353535;
+}
+
+
+table, td, th
+{
+    /*border-color: #600;*/
+    border-color: #252525;
+    border-style: solid;
+    text-align:center;
+
+}
+
+
+div.nav:hover{
+    background-color:#585858;
+    float:right;
+    padding-right:10px;
+    padding-left:10px;
+    padding-top:4px;
+    padding-bottom:6px;
+    color:#ffffff;
+}
+
+
+div.nav{
+    background-color:#676767;
+    float:right;
+    padding-right:10px;
+    padding-left:10px;
+    padding-top:4px;
+    padding-bottom:6px;
+    color:#111111;
+}
+
+
+
+a {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
+a:hover {text-decoration:none;color:#ff0000;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
+a img {border: none; } 
+
+table
+{
+    border-width: 0 0 0px 0px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+#noticediv,#results,#csvinputs,#rhubarboutput,#body
+{
+    margin: 0;
+    padding: 4px;
+    /*background-color: #FFC;*/
+    background-color:#454545;
+    font-family:San-serif,Verdana,Arial;
+    font-size:0.8em;
+    text-align:left;
+    color:#a7a7a7;
+
+}
+
+
+
+td,th{
+    border-color: #454545;
+    /*border-color: #ffffff;*/
+    border-width: 1px 1px 0 0;
+    text-align:left;
+}
+
+
+
+.products {
+    width: 280px;
+    height: 300px;
+    //background: #252525;
+    background-color:#454545;
+    margin: 50px;
+    //border: white solid 1px;
+    padding:20px;
+    display: inline-block;
+    vertical-align:top;
+    //float:left;
+    text-align:left;
+}
+
+
+.productimage {
+   width:180px;
+   height:160px;
+   padding-bottom:10px;
+   #background-color:#ffffff;
+}
+
+
+
+
+
+/*Flexbox */
+.container{
+  display:flex;
+  margin: 0 auto;
+  #border: 1px black solid;
+}
+
+
+.one, .two {
+  flex: 1;
+  #border: 1px black solid;
+  #margin: 4px;
+  padding: 10px;
+}
+
+
+
+
+
+
+
+
+
+/*Flexbox grid*/
+/*view cart page*/
+.grid-container {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width:100%;
+}
+
+
+/* 5n means 5 columns */
+.grid-item:nth-child(5n){
+  #height: 28px;
+  background-color:#232323;
+  /* Set the width of the 5th column to 25% */
+  width: 8%;
+  #padding: 4px;
+  text-align: center;
+  #box-sizing: border-box;
+}
+
+
+.grid-item:nth-child(5n-1) {
+  background-color:#303030;
+/* Set the width of the 4th column to 25% */
+  width: 6%;
+  text-align: center;
+  flex-grow: 1;
+
+}
+
+.grid-item:nth-child(5n-2) {
+  background-color:#292929;
+/* Set the width of the 3rd column */
+  width: 46%;
+  flex-grow: 1;
+  padding-top:6px;
+  padding-bottom:6px;
+
+}
+
+
+
+.grid-item:nth-child(5n-3) {
+  background-color:#212121;
+/* Set the width of the 2nd column */
+  width: 38%;
+  flex-grow: 1;
+
+}
+
+
+.grid-item:nth-child(5n-4) {
+  background-color:#313131;
+/* Set the width of the 1st column */
+  width: 2%;
+  text-align: center;
+  flex-grow: 1;
+}
+
+
+
+
+/* Style the text input boxes */
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="password"] {
+  width: 98%;
+  box-sizing: border-box;
+}
+
+/*Flexbox grid*/
+
+
+
+
+
+
+
+
+
+
+/*Purchases/orders page*/
+
+
+.orders-top{
+  display:flex;
+  flex-direction: row;
+  background-color:#222222;
+  padding:8px;
+}
+
+
+
+
+/* 4n means 4 columns */
+/*4th column from the left*/
+.orders-top-elements:nth-child(4n){
+  #height: 28px;
+  #background-color:#ff5555;
+  width: 20%;
+  padding:6px;
+  #box-sizing: border-box;
+}
+
+
+/*3rd column from the left*/
+.orders-top-elements:nth-child(4n-1) {
+  #background-color:#00ff00;
+  width: 46%;
+  padding:6px;
+  text-align:right;
+}
+
+
+/*2nd column from the left*/
+.orders-top-elements:nth-child(4n-2) {
+  #background-color:#283928;
+  width: 22%;
+  padding:6px;
+}
+
+
+/*1st column from the left*/
+.orders-top-elements:nth-child(4n-3) {
+  #background-color:#392839;
+  width: 8%;
+  padding:6px;
+  text-align:right;
+
+}
+
+
+
+
+.orders-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width:100%;
+  #align-items: center;
+  justify-content: center;
+}
+
+
+
+.order-item{
+  padding:20px 0px 0px;
+}
+
+#purchquantity, #purchprice, #purchtotal{
+  padding:40px 0px 20px;
+}
+
+
+#invoice, #orderdetails, #trackorder{
+  padding:15px 0px 20px;
+}
+
+
+/* 5n means 5 columns */
+.order-item:nth-child(5n){
+  #height: 28px;
+  background-color:#222222;
+  /* Set the width of the 5th column from left*/
+  width: 10%;
+  text-align: center;
+  #box-sizing: border-box;
+  padding: 10px 0px 10px;
+}
+
+
+
+.order-item:nth-child(5n-1) {
+  background-color:#333333;
+/* Set the width of the 4th column from left */
+  width: 10%;
+  text-align: center;
+  flex-grow: 1;
+  padding: 10px 0px 10px;
+
+}
+
+.order-item:nth-child(5n-2) {
+  background-color:#232323;
+/* Set the width of the 3rd column from left */
+  width: 10%;
+  flex-grow: 1;
+  text-align: center;
+  padding: 10px 0px 10px;
+
+}
+
+
+
+.order-item:nth-child(5n-3) {
+  background-color:#303030;
+/* Set the width of the 2nd column from left */
+  width: 50%;
+  text-align: left;
+  flex-grow: 1;
+  #padding-top: 40px;
+  padding: 40px 0px 0px;
+
+}
+
+
+
+.order-item:nth-child(5n-4) {
+  background-color:#282828;
+/* Set the width of the 1st column from left */
+  width: 20%;
+  text-align: center;
+  flex-grow: 1;
+}
+
+
+
+
+
+/*shipping address*/
+.shipping-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width:90%;
+}
+
+
+/* 2n means 2 columns */
+.shipping:nth-child(2n){
+  #height: 28px;
+  #background-color:#00ffff;
+  /* Set the width of the 3rd column to 25% */
+  width: 75%;
+
+  box-sizing: border-box;
+}
+
+
+.shipping:nth-child(2n-1) {
+  #background-color:#00ff00;
+/* Set the width of the 2nd column to 25% */
+  width: 25%;
+  flex-grow: 1;
+  padding-left: 0px;
+}
+
+
+
+/* Style the text input boxes */
+input[type="text"] {
+  width: 98%;
+  box-sizing: border-box;
+}
+
+
+
+.tracking-container{
+  display:flex;
+  flex-direction: row;
+  background-color:#333333;
+  width:100%;
+  justify-content: space-evenly;
+
+}
+
+
+.tracking-orderinfo{
+  display:flex;
+  flex-direction: row;
+  flex:2;
+  background-color:#303030;
+  padding:20px;
+}
+
+
+
+
+/* 2n means 2 columns */
+.tracking-orderinfo-elements:nth-child(2n){
+  #height: 28px;
+  #background-color:#353535;
+  /* Set the width of the 3rd column to 25% */
+  width: 50%;
+  padding:4px;
+  #box-sizing: border-box;
+}
+
+
+.tracking-orderinfo-elements:nth-child(2n-1) {
+  #background-color:#353535;
+/* Set the width of the 2nd column to 25% */
+  width: 50%;
+  padding:4px;
+  text-align:right;
+
+}
+
+
+
+
+.tracking-progress{
+  display:flex;
+  flex-direction: column;
+  flex:4;
+  background-color:#353535;
+  padding:0px;
+}
+
+
+.tracking-item{
+  display:flex;
+  flex-direction: row;
+  padding:4px;
+  margin:4px;
+  background-color:#303030;
+}
+
+
+
+/* 2n means 2 columns */
+.tracking-detail:nth-child(2n){
+  #height: 28px;
+  #background-color:#00ffff;
+  /* Set the width of the 3rd column to 25% */
+  width: 50%;
+  padding:4px;
+  box-sizing: border-box;
+  flex: 7;
+}
+
+
+.tracking-detail:nth-child(2n-1) {
+  #background-color:#00ff00;
+/* Set the width of the 2nd column to 25% */
+  width: 50%;
+  padding:4px;
+  flex: 1;
+
+}
+
+
+
+
+/*shipping address*/
+
+#saveshipaddrbtn{
+  background-color:#f8f8f8;
+  padding:4px;
+  height:16px;
+  width:32px;
+  color:#000000;
+  text-align:center;
+}
+
+
+#saveshipaddrbtn:hover{
+  background-color:#9A9A9A;
+  padding:4px;
+  height:16px;
+  width:32px;
+  color:#000000;
+  text-align:center;
+  cursor:default;
+}
+
+
