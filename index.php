@@ -29,7 +29,7 @@ CJ Dev
 
 
 <div id="logo" style="float:left;width:250px;height:60px;background-color:#565656;text-align:center;padding-top:40px;color:#ffffff;font-family:Arial;font-size:1.8em;">
-<a href="http://http://cjstore.a0001.net/">CJ Dev</a>
+CJ Dev
 </div>
 
 
@@ -197,7 +197,7 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 </div>
 
 <div id="footer" style="margin: 0 auto;max-width:1200px;height:24px;border 1px white solid;background-color:#787878;text-align:center;padding-top:10px;font-family:Arial;font-size:0.9em;">
-Copyright &copy; 2023 SSP All Rights Reserved
+Copyright &copy; 2023 CJ All Rights Reserved
 
 <br><br>
 
