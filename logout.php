@@ -3,14 +3,12 @@
 	if(isset($_COOKIE['session_id'])){
 		$N = explode("+", $_COOKIE['session_id']);
 		$sessionid = $N[0];
-		//$name = $N[1];
-		//$paid = $N[2];
-		//echo "$session_id<br/>";
+
 
 	}else
 	if(isset($_SESSION['session_id'])){
 		$sessionid = $_SESSION['session_id'];
-		//echo "$session_id";
+
 	}
 
 
@@ -42,7 +40,7 @@ You're logged out.
 
 <?php
 
-for($i=0;$i<30;$i++){
+for($i=0;$i<25;$i++){
 	echo "<br/>";
 }
 ?>
