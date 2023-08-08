@@ -10,9 +10,6 @@ if(isset($_GET['sessionid'])){
 
 
 
-//$thisfile = $_SERVER['PHP_SELF'];//moved to navigation.php
-//echo "$thisfile<br/>";
-//$currentdir = basename(dirname(__FILE__));
 
 ?>
 
@@ -86,9 +83,6 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "purchased"){
 		include "purchased.php";
 	}else
-	if($page == "storetest"){
-		include "storetest.php";
-	}else
 	if($page == "tos"){
 		include "tos.php";
 	}else
@@ -156,9 +150,6 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	}else
 	if($page == "storetest"){
 		include "storetest.php";
-	}else
-	if($page == "lstdw"){
-		include "lastdrawscript.php";
 	}else
 	if($page == "tos"){
 		include "tos.php";
