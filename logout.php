@@ -3,12 +3,12 @@
 	if(isset($_COOKIE['session_id'])){
 		$N = explode("+", $_COOKIE['session_id']);
 		$sessionid = $N[0];
-
+		//echo "$session_id<br/>";
 
 	}else
 	if(isset($_SESSION['session_id'])){
 		$sessionid = $_SESSION['session_id'];
-
+		//echo "$session_id";
 	}
 
 
@@ -22,25 +22,38 @@ unset($_SESSION['session_id']);
 session_destroy();
 
 
-	include "dbconnect.php";
 
-	$query = "UPDATE cjusers SET sessionid='' WHERE sessionid='$sessionid'";
+	include "dbconnect_prepstmt.php";
 
-	$result = mysqli_query($link, $query);
+	$blank = "";
 
-	mysqli_close($link);
+	$stmt = $conn->prepare("UPDATE cjusers SET sessionid=? WHERE sessionid=?");
+
+	$stmt->bind_param("ss", $blank, $sessionid);
+	$stmt->execute();
+
+
+	// Check for errors and affected rows
+	if ($stmt->error) {
+		die("Error during execution: " . $stmt->error);
+	}
+
+	//$affectedRows = $stmt->affected_rows;
+
+	$stmt->close();
+	$conn->close();
 
 
 ?>
 
 
 
-<div id="body" style="margin: 0 auto;width:960px;border 1px white solid;background-color:#454545;padding:20px;">
+<div style="margin: 0 auto;width:960px;border 1px white solid;background-color:#454545;padding:20px;">
 You're logged out.
 
 <?php
 
-for($i=0;$i<25;$i++){
+for($i=0;$i<30;$i++){
 	echo "<br/>";
 }
 ?>
