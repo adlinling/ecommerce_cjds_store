@@ -61,8 +61,45 @@ Packing Content:<br><br><br>
 1x Type-C cable<br>";
 
 
-$products['CJJSCCGT00017']['details'] = $products['CJSJ1089759']['details'];
-$products['CJLY1428781']['details'] = $products['CJSJ1089759']['details'];
+$products['CJJSCCGT00017']['details'] = "Interface type: SATA3 interface<br>
+Hard disk size: 2.5 inches<br>
+Write data transfer rate: 410 (MB/s)<br>
+Read data transfer rate: 560 (MB/s)<br>
+Flash memory architecture: TLC three-tier unit<br>
+Applicable type: desktop/notebook<br>
+Hard disk thickness: 7mm<br>
+Type: Internal<br>
+Style: Solid State Drive<br>
+Application: Office<br><br><br><br><br>";
+
+
+
+$products['CJLY1428781']['details'] = "Product Information：<br><br>
+
+Product Category: Nightdress<br>
+Fabric name: imitation silk<br>
+Main fabric composition: polyester fiber (polyester)<br>
+The content of main fabric components: 100 (%)<br>
+Applicable crowd category: Ladies<br>
+Applicable scene: home<br>
+Color: white, wine red, light gray, light purple<br><br><br>
+
+
+Size Information: <br><br>
+
+Size: S, M, L, XL<br><br>
+
+
+Note：<br>
+1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. <br>
+<br>
+2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service.<br><br>
+
+3.As you know, the different computers display colors differently, the color of the actual item may vary slightly from the images.<br><br>
+
+Packing List：<br><br>
+
+1* Homewear<br><br><br><br>";
 
 
 

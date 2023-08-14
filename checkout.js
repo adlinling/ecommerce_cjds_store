@@ -1,4 +1,31 @@
 
+function updateProdctInfo() {
+
+  var variant = document.myForm.variant.value;
+
+  if ((variant == null) || (variant == "")) return;
+
+  var pieces = variant.split("#");	
+
+  var vid = pieces[0];
+  var price = pieces[1];
+
+  var file = "get_cjinfo.php?vid=" + escape(vid) + "&price=" + escape(price);
+  //var file = "test.php";
+
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     document.getElementById("myDiv").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", file, true);
+  xhttp.send();
+
+}
+
+
 function validate(refid, ip) {
 
 
@@ -8,10 +35,17 @@ function validate(refid, ip) {
 
 		shipinfo = shipmethod_cost.split("#");
 
+                shippingMethod = shipinfo[0];
+                updatedShipping = shipinfo[1];
 
 
 		grandtotal = parseFloat(subtotal) + parseFloat(updatedShipping);
 
+		var usediffaddr;
+		var stopsubmit = 0;
+		var emptyfields = "These fields cannot be blank:\n";
+		const diffaddr = document.getElementById('diffaddr');
+		
 
 		if(diffaddr.checked){
 			usediffaddr = 'TRUE';
@@ -118,6 +152,13 @@ function validate(refid, ip) {
 			country = countrySelect.options[countrySelect.selectedIndex].value;
 			countryb = countrySelectb.options[countrySelectb.selectedIndex].value;
 
+			shipping_line1 = line1 + '&billing:' + line1b;
+			shipping_line2 = line2 + '&billing:' + line2b;
+			shipping_city = city + '&billing:' + cityb;
+			shipping_state = state + '&billing:' + stateb;
+			shipping_postal_code = zip + '&billing:' + zipb;
+			firstname = fname + '&billing:' + fnameb;
+			lastname = lname + '&billing:' + lnameb;
 
 			shipping_country_code = country +  '&billing:' + countryb;
 
@@ -194,17 +235,21 @@ function validate(refid, ip) {
 		addr1 = shipping_line1;
 		addr2 = shipping_line2;
 
+		accountnum = document.getElementById("accountnum").value;
+		email = document.getElementById("emailaddr").value;
+
 		phone = document.getElementById("phone").value;
 		phonecountry = countryPhoneSelect.options[countryPhoneSelect.selectedIndex].value;
 		phonenumber = phonecountry + "-" + phone;
 
+		total_amt = grandtotal;
 
 		if(stopsubmit){
 			alert(emptyfields);
 			return false;
 		}else{
-
-			sendFetchpost('payment.php', 'Credit Card', usediffaddr, accountnum, refid, email, firstname, lastname, addr1, addr2, shipping_city, shipping_state, shipping_country_code, shipping_postal_code, phonenumber, total_amt.toFixed(2), ip)
+			//alert(firstname + "\n" + lastname + "\n" + shipping_line1 + "\n" + shipping_line2 + "\n" + shipping_city + "\n" + shipping_state + "\n" + shipping_postal_code + "\n" + "\nCountry: " + shipping_country_code + "\nDifferenet Addr: " + usediffaddr + "\nReference ID: " + refid + "\nAccount Number: " + accountnum + "\nPhone: " + phonenumber + "\n" + email);
+			sendFetchpost('paid.php', 'Credit Card', usediffaddr, accountnum, refid, email, firstname, lastname, addr1, addr2, shipping_city, shipping_state, shipping_country_code, shipping_postal_code, phonenumber, total_amt.toFixed(2), ip)
 		}
 
     return true;
@@ -212,7 +257,7 @@ function validate(refid, ip) {
 }
 
 
-
+//from https://stackoverflow.com/questions/3937513/javascript-validation-for-empty-input-field
 function isEmpty(str) {
     return !str.trim().length;
 }
@@ -220,13 +265,16 @@ function isEmpty(str) {
 
 function spawnshipaddr(jsonurl){
 
+  //for multiple checkboxes, uses getElementsByClassName https://stackoverflow.com/questions/11599666/get-the-value-of-checked-checkbox
+
   var diffaddr = document.getElementById('diffaddr');
   var shippingform = "";
+  var country = "US";
   var state = "AZ";
-
+  var productsjsonurl = jsonurl;
 
   var countries = {
-		"US": "United States of America (the)",
+		"US": "United States of America",
 		"AF": "Afghanistan",
 		"AX": "Åland Islands",
 		"AL": "Albania",
@@ -243,7 +291,7 @@ function spawnshipaddr(jsonurl){
 		"AU": "Australia",
 		"AT": "Austria",
 		"AZ": "Azerbaijan",
-		"BS": "Bahamas(the)",
+		"BS": "Bahamas",
 		"BH": "Bahrain",
 		"BD": "Bangladesh",
 		"BB": "Barbados",
@@ -253,35 +301,35 @@ function spawnshipaddr(jsonurl){
 		"BJ": "Benin",
 		"BM": "Bermuda",
 		"BT": "Bhutan",
-		"BO": "Bolivia (Plurinational State of)",
+		"BO": "Bolivia",
 		"BQ": "Bonaire, Sint Eustatius and Saba",
 		"BA": "Bosnia and Herzegovina",
 		"BW": "Botswana",
 		"BV": "Bouvet Island",
 		"BR": "Brazil",
-		"IO": "British Indian Ocean Territory (the)",
+		"IO": "British Indian Ocean Territory",
 		"BN": "Brunei Darussalam",
 		"BG": "Bulgaria",
 		"BF": "Burkina Faso",
 		"BI": "Burundi",
-		"CV": "Cabo Verde",
+		"CV": "Cabo Verde",
 		"KH": "Cambodia",
 		"CM": "Cameroon",
 		"CA": "Canada",
-		"KY": "Cayman Islands (the)",
-		"CF": "Central African Republic (the)",
+		"KY": "Cayman Islands",
+		"CF": "Central African Republic",
 		"TD": "Chad",
 		"CL": "Chile",
 		"CN": "China",
-		"CX": "Christmas Island",
-		"CC": "Cocos (Keeling) Islands(the)",
+		"CX": "Christmas Island",
+		"CC": "Cocos (Keeling) Islands",
 		"CO": "Colombia",
-		"KM": "Comoros (the)",
-		"180": "Congo (the Democratic Republic of OD",
-		"CG": "Congo (the)",
-		"CK": "Cook Islands (the)",
-		"CR": "Costa Rica",
-		"CI": "Côte d'Ivoire",
+		"KM": "Comoros",
+		"180": "Congo (the Democratic Republic of OD)",
+		"CG": "Congo",
+		"CK": "Cook Islands",
+		"CR": "Costa Rica",
+		"CI": "Côte d'Ivoire",
 		"HR": "Croatia",
 		"CU": "Cuba",
 		"CW": "Curaçao",
@@ -290,24 +338,24 @@ function spawnshipaddr(jsonurl){
 		"DK": "Denmark",
 		"DJ": "Djibouti",
 		"DM": "Dominica",
-		"DO": "Dominican Republic (the)",
+		"DO": "Dominican Republic",
 		"EC": "Ecuador",
 		"EG": "Egypt",
-		"SV": "El Salvador",
-		"GQ": "Equatorial Guinea",
+		"SV": "El Salvador",
+		"GQ": "Equatorial Guinea",
 		"ER": "Eritrea",
 		"EE": "Estonia",
 		"ET": "Ethiopia",
-		"FK": "Falkland Islands (the) [Malvinas]",
-		"FO": "Faroe Islands (the)",
+		"FK": "Falkland Islands [Malvinas]",
+		"FO": "Faroe Islands",
 		"FJ": "Fiji",
 		"FI": "Finland",
 		"FR": "France",
-		"GF": "French Guiana",
-		"PF": "French Polynesia",
-		"TF": "French Southern Territories (the)",
+		"GF": "French Guiana",
+		"PF": "French Polynesia",
+		"TF": "French Southern Territories",
 		"GA": "Gabon",
-		"GM": "Gambia (the)",
+		"GM": "Gambia",
 		"GE": "Georgia",
 		"DE": "Germany",
 		"GH": "Ghana",
@@ -323,18 +371,18 @@ function spawnshipaddr(jsonurl){
 		"GW": "Guinea-Bissau",
 		"GY": "Guyana",
 		"HT": "Haiti",
-		"HM": "Heard Island and McDonald Islands",
-		"VA": "Holy See (the)",
+		"HM": "Heard Island and McDonald Islands",
+		"VA": "Holy See",
 		"HN": "Honduras",
-		"HK": "Hong Kong",
+		"HK": "Hong Kong",
 		"HU": "Hungary",
 		"IS": "Iceland",
 		"IN": "India",
 		"ID": "Indonesia",
-		"IR": "Iran (Islamic Republic of)",
+		"IR": "Iran",
 		"IQ": "Iraq",
 		"IE": "Ireland",
-		"IM": "Isle of Man",
+		"IM": "Isle of Man",
 		"IL": "Israel",
 		"IT": "Italy",
 		"JM": "Jamaica",
@@ -348,7 +396,7 @@ function spawnshipaddr(jsonurl){
 		"KR": "South Korea",
 		"KW": "Kuwait",
 		"KG": "Kyrgyzstan",
-		"LA": "Lao People's Democratic Republic (the)",
+		"LA": "Lao People's Democratic Republic",
 		"LV": "Latvia",
 		"LB": "Lebanon",
 		"LS": "Lesotho",
@@ -358,21 +406,21 @@ function spawnshipaddr(jsonurl){
 		"LT": "Lithuania",
 		"LU": "Luxembourg",
 		"MO": "Macao",
-		"MK": "Macedonia (the former Yugoslav Republic of)",
+		"MK": "Macedonia",
 		"MG": "Madagascar",
 		"MW": "Malawi",
 		"MY": "Malaysia",
 		"MV": "Maldives",
 		"ML": "Mali",
 		"MT": "Malta",
-		"MH": "Marshall Islands (the)",
+		"MH": "Marshall Islands",
 		"MQ": "Martinique",
 		"MR": "Mauritania",
 		"MU": "Mauritius",
 		"YT": "Mayotte",
 		"MX": "Mexico",
-		"FM": "Micronesia (Federated States of)",
-		"MD": "Moldova (the Republic of)",
+		"FM": "Micronesia",
+		"MD": "Moldova",
 		"MC": "Monaco",
 		"MN": "Mongolia",
 		"ME": "Montenegro",
@@ -383,96 +431,96 @@ function spawnshipaddr(jsonurl){
 		"NA": "Namibia",
 		"NR": "Nauru",
 		"NP": "Nepal",
-		"NL": "Netherlands (the)",
-		"NC": "New Caledonia",
-		"NZ": "New Zealand",
+		"NL": "Netherlands",
+		"NC": "New Caledonia",
+		"NZ": "New Zealand",
 		"NI": "Nicaragua",
-		"NE": "Niger (the)",
+		"NE": "Niger",
 		"NG": "Nigeria",
 		"NU": "Niue",
-		"NF": "Norfolk Island",
-		"MP": "Northern Mariana Islands (the)",
+		"NF": "Norfolk Island",
+		"MP": "Northern Mariana Islands",
 		"NO": "Norway",
 		"OM": "Oman",
 		"PK": "Pakistan",
 		"PW": "Palau",
-		"PS": "Palestine, State of",
+		"PS": "Palestine, State of",
 		"PA": "Panama",
-		"PG": "Papua New Guinea",
+		"PG": "Papua New Guinea",
 		"PY": "Paraguay",
 		"PE": "Peru",
-		"PH": "Philippines (the)",
+		"PH": "Philippines",
 		"PN": "Pitcairn",
 		"PL": "Poland",
 		"PT": "Portugal",
-		"PR": "Puerto Rico",
+		"PR": "Puerto Rico",
 		"QA": "Qatar",
 		"RE": "Réunion",
 		"RO": "Romania",
-		"RU": "Russian Federation (the)",
+		"RU": "Russian Federation",
 		"RW": "Rwanda",
 		"BL": "Saint Barthélemy",
-		"SH": "Saint Helena, Ascension and Tristan da Cunha",
-		"KN": "Saint Kitts and Nevis",
-		"LC": "Saint Lucia",
-		"MF": "Saint Martin (French part)",
-		"PM": "Saint Pierre and Miquelon",
-		"VC": "Saint Vincent and the Grenadines",
+		"SH": "Saint Helena, Ascension and Tristan da Cunha",
+		"KN": "Saint Kitts and Nevis",
+		"LC": "Saint Lucia",
+		"MF": "Saint Martin (French part)",
+		"PM": "Saint Pierre and Miquelon",
+		"VC": "Saint Vincent and the Grenadines",
 		"WS": "Samoa",
-		"SM": "San Marino",
-		"ST": "Sao Tome and Principe",
-		"SA": "Saudi Arabia",
+		"SM": "San Marino",
+		"ST": "Sao Tome and Principe",
+		"SA": "Saudi Arabia",
 		"SN": "Senegal",
 		"RS": "Serbia",
 		"SC": "Seychelles",
-		"SL": "Sierra Leone",
+		"SL": "Sierra Leone",
 		"SG": "Singapore",
-		"SX": "Sint Maarten (Dutch part)",
+		"SX": "Sint Maarten (Dutch part)",
 		"SK": "Slovakia",
 		"SI": "Slovenia",
-		"SB": "Solomon Islands",
+		"SB": "Solomon Islands",
 		"SO": "Somalia",
-		"ZA": "South Africa",
-		"GS": "South Georgia and the South Sandwich Islands",
-		"SS": "South Sudan",
+		"ZA": "South Africa",
+		"GS": "South Georgia and the South Sandwich Islands",
+		"SS": "South Sudan",
 		"ES": "Spain",
-		"LK": "Sri Lanka",
-		"SD": "Sudan (the)",
+		"LK": "Sri Lanka",
+		"SD": "Sudan",
 		"SR": "Suriname",
-		"SJ": "Svalbard and Jan Mayen",
+		"SJ": "Svalbard and Jan Mayen",
 		"SZ": "Swaziland",
 		"SE": "Sweden",
 		"CH": "Switzerland",
-		"SY": "Syrian Arab Republic",
-		"TW": "Taiwan (Province of China)",
+		"SY": "Syrian Arab Republic",
+		"TW": "Taiwan",
 		"TJ": "Tajikistan",
-		"TZ": "Tanzania, United Republic of",
+		"TZ": "Tanzania, United Republic of",
 		"TH": "Thailand",
-		"YK": "The Republic of Kosovo",
+		"YK": "The Republic of Kosovo",
 		"TL": "Timor-Leste",
 		"TG": "Togo",
 		"TK": "Tokelau",
 		"TO": "Tonga",
-		"TT": "Trinidad and Tobago",
+		"TT": "Trinidad and Tobago",
 		"TN": "Tunisia",
 		"TR": "Turkey",
 		"TM": "Turkmenistan",
-		"TC": "Turks and Caicos Islands (the)",
+		"TC": "Turks and Caicos Islands",
 		"TV": "Tuvalu",
 		"UG": "Uganda",
 		"UA": "Ukraine",
-		"AE": "United Arab Emirates(the)",
-		"GB": "United Kingdom of Great Britain and Northern Irela",
-		"UM": "United States Minor Outlying Islands (the)",
+		"AE": "United Arab Emirates",
+		"GB": "United Kingdom of Great Britain and Northern Irela",
+		"UM": "United States Minor Outlying Islands",
 		"UY": "Uruguay",
 		"UZ": "Uzbekistan",
 		"VU": "Vanuatu",
-		"VE": "Venezuela (Bolivarian Republic of)",
-		"VN": "Viet Nam",
-		"VG": "Virgin Islands (British)",
-		"VI": "Virgin Islands (U.S.)",
-		"WF": "Wallis and Futuna",
-		"EH": "Western Sahara*",
+		"VE": "Venezuela",
+		"VN": "Viet Nam",
+		"VG": "Virgin Islands (British)",
+		"VI": "Virgin Islands (U.S.)",
+		"WF": "Wallis and Futuna",
+		"EH": "Western Sahara*",
 		"YE": "Yemen",
 		"ZM": "Zambia",
 		"ZW": "Zimbabwe"
@@ -619,6 +667,9 @@ function checkouttotal(){
 
 		grandtotal = parseFloat(subtotal) + parseFloat(updatedShipping),
 
+		//alert("Shipping:" + updatedShipping);
+		document.getElementById("shipcost").innerHTML = updatedShipping;
+		document.getElementById("grandtotal").innerHTML = grandtotal.toFixed(2);
 
 		if(updatedShipping == "0"){
 			//Hide the paypal button when shipping is unavailable
@@ -641,6 +692,14 @@ function customer(paymethod, diffaddr, accountnum, referenceid, email, firstname
 	this.paymethod = paymethod;
 	this.diffaddr = diffaddr;
 	this.accountnum = accountnum;
+	this.referenceid = referenceid;
+	this.email = email;
+	this.firstname = firstname;
+	this.lastname = lastname;
+	this.address1 = address1;
+	this.address2 = address2;
+	this.city = city;
+	this.state = state;
 	this.country = country;
 	this.zip = zip;
 	this.phone = phone;
@@ -731,6 +790,23 @@ if(billorship == "ship"){
 						stateinput += '<option value="NC">NC</option>';
 						stateinput += '<option value="NE">NE</option>';
 						stateinput += '<option value="NH">NH</option>';
+						stateinput += '<option value="NJ">NJ</option>';
+						stateinput += '<option value="NM">NM</option>';
+						stateinput += '<option value="NV">NV</option>';
+						stateinput += '<option value="NY">NY</option>';
+						stateinput += '<option value="ND">ND</option>';
+						stateinput += '<option value="OH">OH</option>';
+						stateinput += '<option value="OK">OK</option>';
+						stateinput += '<option value="OR">OR</option>';
+						stateinput += '<option value="PA">PA</option>';
+						stateinput += '<option value="PR">PR</option>';
+						stateinput += '<option value="RI">RI</option>';
+						stateinput += '<option value="SC">SC</option>';
+						stateinput += '<option value="SD">SD</option>';
+						stateinput += '<option value="TN">TN</option>';
+						stateinput += '<option value="TX">TX</option>';
+						stateinput += '<option value="UM">UM</option>';
+						stateinput += '<option value="UT">UT</option>';
 						stateinput += '<option value="VI">VI</option>';
 						stateinput += '<option value="VT">VT</option>';
 						stateinput += '<option value="VA">VA</option>';
@@ -761,6 +837,7 @@ if(billorship == "bill"){
 			document.getElementById('diffaddr').click();
 		}
 
+		document.getElementById('diffaddr').checked = false;
 		document.getElementById("spawnshipaddr").innerHTML = "";
 
 
@@ -771,8 +848,14 @@ if(billorship == "ship"){
 		document.getElementById("stateselect").innerHTML = stateinput;
 }
 
+
+  var file = "shipping_ajax.php?products=" + escape(products) + "&country=" + escape(country);
+
+  //document.getElementById("debug").innerHTML = file;
+
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
      document.getElementById("shippingoptions").innerHTML = this.responseText;
     checkouttotal();
     }

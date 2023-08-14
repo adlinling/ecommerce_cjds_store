@@ -1,41 +1,10 @@
+<script src="checkout.js"></script>
+
 <?php
 /* 
-Revisions:  This version no longer pulls product data from the API.  It will pull from the data from productslist.php instead
+Revisions:  Renamed ajaxfunction() to updateProdctInfo() and moved it to checkout.js
 */
-?>
 
-<script language="javascript" type="text/javascript">
-<!--
-
-function ajaxFunction() {
-
-  var variant = document.myForm.variant.value;
-
-  if ((variant == null) || (variant == "")) return;
-
-  var pieces = variant.split("#");	
-
-  var vid = pieces[0];
-  var price = pieces[1];
-
-  var file = "get_cjinfo.php?vid=" + escape(vid) + "&price=" + escape(price);
-  //var file = "test.php";
-
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     document.getElementById("myDiv").innerHTML = this.responseText;
-    }
-  };
-  xhttp.open("GET", file, true);
-  xhttp.send();
-
-}
-//-->
-</script>
-
-<?php
 
 
 include_once "functions.php";
@@ -139,6 +108,7 @@ if($sku){
 
 
 
+		//Code below from https://www.geeksforgeeks.org/how-to-use-curl-to-get-json-data-and-decode-json-data-in-php  with modifications
 
 		// Initializing curl
 		$curl = curl_init();
@@ -233,7 +203,7 @@ if($sku){
 	echo "<form name='myForm' action='?pg=addtocart' method='post'>";
 
 
-	echo "Size: <select name='variant' onChange='ajaxFunction();'>";
+	echo "Size: <select name='variant' onChange='updateProdctInfo();'>";
 
 	foreach($variants as $sizeoption => $vidNpriceNimg){
 		$separate = explode("#", $vidNpriceNimg);
@@ -250,7 +220,7 @@ if($sku){
 	}
 	echo "</select>";
 
-	//echo "<input type='submit' value='Add to Cart' onClick='ajaxFunction();'>";
+	//echo "<input type='submit' value='Add to Cart' onClick='updateProdctInfo();'>";
 	echo "<input type='submit' name='submit' value='Add to Cart'>";
 	echo "</form>";
 
@@ -270,6 +240,12 @@ if($sku){
 ?>
 
 
+
+
+<div id="social">
+<h5 style="color:#ffffff;text-align:center;">Tell Your Friends About Us</h5>
+Facebook Twitter Youtube Google Plus  Sign up for our newsletter
+</div>
 
 </div>
 
