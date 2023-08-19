@@ -1,10 +1,6 @@
 <?php
 
 
-
-
-//include_once "functions.php";
-
 $host = $_SERVER['SERVER_NAME'];
 setcookie("cart", "", time()-3600*24*7, "/", $host);
 setcookie("prices", "", time()-3600*24*7, "/", $host);
@@ -34,46 +30,62 @@ $referencecode = isset($_GET['refid'])?$_GET['refid']:"";
 
 echo "Thank you for your order.  The order reference number is $referencecode.  ";
 
+	include "dbconnect_prepstmt.php";
 
-	include "dbconnect.php";
 
-	$query = "SELECT account FROM cjorders WHERE refnum='$referencecode'";
+	$query = "SELECT account FROM cjorders WHERE refnum=?";
 
-	$result = mysqli_query($link, $query);
+	$stmt = $conn->prepare($query); 
+	$stmt->bind_param("s", $referencecode);
+	$stmt->execute();
 
-	if(mysqli_num_rows($result) == 0){
+	$result = $stmt->get_result();
+
+	$data = $result->fetch_all(MYSQLI_ASSOC);
+
+	$affectedRows = $stmt->affected_rows;
+
+	//echo "Affected rows: $affectedRows<br>";
+
+	$stmt->close();
+
+
+
+	if($affectedRows == 0){
 
 		echo "No order with given reference code found.<br>";
 
 	}else{
 		//echo "Reference code found in orders table.  Getting the account number.<br>";
-
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-
-			$account = $row['account'];
-		}
+		$account = $data[0]['account'];
 	}
 
 
-	/* free result set */
-	mysqli_free_result($result);
+
+	$query = "SELECT activated FROM cjusers	WHERE regdate=?";
+
+	$stmt = $conn->prepare($query); 
+	$stmt->bind_param("s", $account);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+
+	$data = $result->fetch_all(MYSQLI_ASSOC);
+
+	$affectedRows = $stmt->affected_rows;
+
+	//echo "Affected rows: $affectedRows<br>";
+
+	$stmt->close();
 
 
-
-	$query = "SELECT activated FROM cjusers	WHERE regdate='$account'";
-
-	$result = mysqli_query($link, $query);
-
-
-	if(mysqli_num_rows($result) == 0){
+	if($affectedRows == 0){
 		//Since a row with the account number has already been added to the table by paid.php in checkout.php, this line will never run unless it is new buyer
 		echo "No account with given account number found.<br>";
 
 	}else{
 		
-		while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-			$activated = $row['activated'];
-		}
+		$activated = $data[0]['activated'];
 
 		if($activated == "1"){
 				echo "You can check the status of your order by logging in to your account.<br>";
@@ -84,12 +96,8 @@ echo "Thank you for your order.  The order reference number is $referencecode.  
 	}
 
 
-	/* free result set */
-	mysqli_free_result($result);
 
-
-	/* close connection */
-	mysqli_close($link);
+	$conn->close();
 ?>
 
 
