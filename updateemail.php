@@ -8,12 +8,6 @@
 <?php
 
 
-	/*
-	foreach($_POST as $key => $value){
-		echo "$key - $value<br>";
-	}
-	*/
-
 
 	if($_GET['id']){
 		$id = $_GET['id'];
@@ -59,18 +53,13 @@
 
 	if($affectedRows == 1){
 
-
-		$emailupdated = TRUE;
-
-		//echo "Email updated!<br><br>";
-		//echo "<a href='index.php?pg=settings'>OK</a>";
+		echo "Email updated!<br><br>";
+		echo "<a href='index.php?pg=settings'>OK</a>";
 
 	}else{
 
-		$emailupdated = FALSE;
-
-		//echo "Unable to update your email address.<br><br>";
-		//echo "<a href='index.php?pg=settings'>OK</a>";
+		echo "Unable to update your email address.<br><br>";
+		echo "<a href='index.php?pg=settings'>OK</a>";
 	}
 
 
