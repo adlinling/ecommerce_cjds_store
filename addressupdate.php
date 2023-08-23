@@ -68,14 +68,14 @@ $stmt->bind_param("ssssssssssssssss", $firstname, $lastname, $address, $city, $s
 $stmt->execute();
 
 
-// Check for errors and affected rows
-if ($stmt->error) {
-    die("Error during execution: " . $stmt->error);
-}
-
 //$affectedRows = $stmt->affected_rows;
 //echo "Number of affected rows: " . $affectedRows;
 
+
+// Check for errors and affected rows
+if ($stmt->error) {
+    die("Error during execution: " . $stmt->error);
+}else{
 
 $stmt->close();
 $conn->close();
@@ -87,6 +87,11 @@ $conn->close();
 Information Updated!<br>
 <br><br><br>
 <a href="?pg=settings">OK</a>
+
+<?php
+}
+?>
+
 
 
 </div>
