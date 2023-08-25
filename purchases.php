@@ -21,54 +21,68 @@ Revisions:  No longer storing order information in .htm files.  Storing them in 
 	}
 
 
-	include "dbconnect.php";
+
 	include "productslist.php";
 	include "functions.php";
 
-	//regdate is the account number
-	$query = "SELECT regdate FROM cjusers WHERE sessionid='$sessionid'";
-
-	$result = mysqli_query($link, $query);
-
-	while($row = mysqli_fetch_array($result)){
-		$account = $row['regdate'];
-		//$replycmtnotif = $row['replycmtnotif'];
-
-	}
-
-	mysqli_free_result($result);
 
 
+	include "dbconnect_prepstmt.php";
+
+	$query = "SELECT regdate FROM cjusers WHERE sessionid=?";
+
+	$stmt = $conn->prepare($query); 
+	$stmt->bind_param("s", $sessionid);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+
+	$data = $result->fetch_all(MYSQLI_ASSOC);
+
+
+	//$affectedRows = $stmt->affected_rows;
+
+	//echo "Affected rows: $affectedRows<br>";
+
+	$stmt->close();
+	//$conn->close();
+
+	$account= $data[0]['regdate'];
 
 
 
 //echo "Account number: $account<br>";
 
 
-//$query = "SELECT refnum, ordernum, recipient, ship_addr FROM cjorders WHERE account='$account'"; //This will get incomplete orders where the webhook from payment processor has not been received
-$query = "SELECT refnum, ordernum, recipient, ship_addr, json FROM cjorders WHERE account='$account' AND ordernum<>''";//<>'' means NOT emtpy
+	//$query = "SELECT refnum, ordernum, recipient, ship_addr FROM cjorders WHERE account='$account'"; //This will get incomplete orders where the webhook from payment processor has not been received
 
 
-$result = mysqli_query($link, $query);
+	$query = "SELECT refnum, ordernum, recipient, ship_addr, json FROM cjorders WHERE account=? AND ordernum<>''";//<>'' means NOT emtpy
 
-$refnums = array();
-$ordernums = array();
-$recipients = array();
-$shipaddresses = array();
+	$stmt = $conn->prepare($query); 
+	$stmt->bind_param("s", $account);
+	$stmt->execute();
 
-while($row = mysqli_fetch_array($result, MYSQLI_ASSOC)){
-		$refnums[] = $row['refnum'];
-		$ordernums[] = $row['ordernum'];
-		$recipients[] = $row['recipient'];
-		$shipaddresses[] = $row['ship_addr'];
-		$jsons[] = $row['json'];
-		//echo "<pre>";
-		//print_r($row);
-		//echo "</pre>";
-}
+	$result = $stmt->get_result();
 
-mysqli_close($link);
+	$data = $result->fetch_all(MYSQLI_ASSOC);
 
+
+	//$affectedRows = $stmt->affected_rows;
+
+	//echo "Affected rows: $affectedRows<br>";
+
+	$stmt->close();
+	$conn->close();
+
+
+	foreach($data as $key => $dataarray){
+		$refnums[] = $dataarray['refnum'];
+		$ordernums[] = $dataarray['ordernum'];
+		$recipients[] = $dataarray['recipient'];
+		$shipaddresses[] = $dataarray['ship_addr'];
+		$jsons[] = $dataarray['json'];
+	}
 
 echo "<br><br>";
 
