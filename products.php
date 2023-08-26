@@ -2,7 +2,7 @@
 
 <?php
 /* 
-Revisions:  Renamed ajaxfunction() to updateProdctInfo() and moved it to checkout.js
+Revisions:  Worked on page layout
 */
 
 
@@ -106,56 +106,6 @@ if($sku){
 
 
 
-
-
-		//Code below from https://www.geeksforgeeks.org/how-to-use-curl-to-get-json-data-and-decode-json-data-in-php  with modifications
-
-		// Initializing curl
-		$curl = curl_init();
-
-
-		curl_setopt($curl, CURLOPT_PASSWORD,	"$apikey");
-
-		// Telling curl to store JSON
-		// data in a variable instead
-		// of dumping on screen
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
-		$headers = [
-			'Content-Type: application/json',
-			//Get this using cj_gettoken.php
-			'CJ-Access-Token: '.$token
-		];
-
-		curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-
-		curl_setopt($curl, CURLOPT_URL,	"https://developers.cjdropshipping.com/api2.0/v1/product/stock/queryByVid?vid=$firstvid");
-
-		// Executing curl
-		$response = curl_exec($curl);
-
-		// Checking if any error occurs
-		// during request or not
-		if($e = curl_error($curl)) {
-			echo "Inventory query error<br>";
-			echo $e;
-		} else {
-
-			// Decoding JSON data
-			$decodedData = json_decode($response, true);
-
-			$inventoryData = $decodedData;
-
-		}
-
-	}
-
-	// Closing curl
-	curl_close($curl);
-
-
 	//echo "<pre>";
 	//print_r($productData['data']);
 	//echo "</pre>";
@@ -232,7 +182,20 @@ if($sku){
 
 }else{
 
-	echo "Pajamas: <a href='$thisfile?pg=store&sku=CJLY1428781'>CJLY1428781</a><br>Wirelss charger: <a href='$thisfile?pg=store&sku=CJSJ1089759'>CJSJ1089759</a><br>SSD: <a href='$thisfile?pg=store&sku=CJJSCCGT00017'>CJJSCCGT00017</a><br>";
+	echo "<div class='productgrid'>";
+	//echo "<br><br><br>";
+
+	echo "<div class='productsgriditem'>Pajamas: <a href='$thisfile?pg=store&sku=CJLY1428781'>CJLY1428781</a></div>";
+	echo "<div class='productsgriditem'>Wirelss charger: <a href='$thisfile?pg=store&sku=CJSJ1089759'>CJSJ1089759</a></div>";
+	echo "<div class='productsgriditem'>SSD: <a href='$thisfile?pg=store&sku=CJJSCCGT00017'>CJJSCCGT00017</a></div>";
+
+	echo "<div class='productsgriditem'>Pajamas: <a href='$thisfile?pg=store&sku=CJLY1428781'>CJLY1428781</a></div>";
+	echo "<div class='productsgriditem'>Wirelss charger: <a href='$thisfile?pg=store&sku=CJSJ1089759'>CJSJ1089759</a></div>";
+	echo "<div class='productsgriditem'>SSD: <a href='$thisfile?pg=store&sku=CJJSCCGT00017'>CJJSCCGT00017</a></div>";
+
+
+	echo "</div>";
+
 
 }
 
@@ -242,13 +205,14 @@ if($sku){
 
 
 
+
+</div>
+
+
 <div id="social">
 <h5 style="color:#ffffff;text-align:center;">Tell Your Friends About Us</h5>
 Facebook Twitter Youtube Google Plus  Sign up for our newsletter
 </div>
-
-</div>
-
 
 
 </div>
