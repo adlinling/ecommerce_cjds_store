@@ -53,17 +53,17 @@ body
 .productgrid{
   display:flex;
   flex-wrap:wrap;
-  padding:30px;
-  justify-content: space-between;
+  padding:20px;
+  justify-content: space-evenly;
 }
 
 
 .productsgriditem{
-  width:250px;
-  height:250px;
+  width:280px;
+  height:280px;
   background-color:#454545;
   padding:30px;
-  margin:20px;
+  margin:10px;
 }
 
 
@@ -77,6 +77,12 @@ body
   padding-top:10px;
   font-family:Arial;
   font-size:0.9em;
+}
+
+
+#social{
+  display:flex;
+  justify-content: center;
 }
 
 
@@ -96,6 +102,7 @@ font.navigation:hover{
   display:flex;
   gap:10px;
   justify-content:right;
+  padding-right:20px;
   margin: 0 auto;
   //max-width:1200px;
   border 1px white solid;
