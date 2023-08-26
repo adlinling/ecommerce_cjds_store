@@ -10,6 +10,9 @@ if(isset($_GET['sessionid'])){
 
 
 
+//$thisfile = $_SERVER['PHP_SELF'];//moved to navigation.php
+//echo "$thisfile<br/>";
+//$currentdir = basename(dirname(__FILE__));
 
 ?>
 
@@ -22,23 +25,24 @@ CJ Dev
 </head>
 
 <body>
-<div id="header" style="margin: 0 auto;max-width:1200px;height:100px;border 1px white solid;background-color:#474747;">
 
 
-<div id="logo" style="float:left;width:250px;height:60px;background-color:#565656;text-align:center;padding-top:40px;color:#ffffff;font-family:Arial;font-size:1.8em;">
-CJ Dev
+<div id="header">
+
+
+<div id="logo">
+<a href="#"><font id="storename">CJ Dev</font></a></a>
+</div>
+
 </div>
 
 
-
-
-</div>
 
 <?php
 include "navigation.php";
 ?>
 
-<div id="body" style="margin: 0 auto;max-width:1160px;border 1px white solid;background-color:#454545;padding:20px;">
+<div class="main">
 
 <?php
 
@@ -82,6 +86,9 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	}else
 	if($page == "purchased"){
 		include "purchased.php";
+	}else
+	if($page == "storetest"){
+		include "storetest.php";
 	}else
 	if($page == "tos"){
 		include "tos.php";
@@ -151,6 +158,9 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "storetest"){
 		include "storetest.php";
 	}else
+	if($page == "lstdw"){
+		include "lastdrawscript.php";
+	}else
 	if($page == "tos"){
 		include "tos.php";
 	}else
@@ -187,8 +197,8 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 
 </div>
 
-<div id="footer" style="margin: 0 auto;max-width:1200px;height:24px;border 1px white solid;background-color:#787878;text-align:center;padding-top:10px;font-family:Arial;font-size:0.9em;">
-Copyright &copy; 2023 CJ All Rights Reserved
+<div id="footer">
+Copyright &copy; 2023 SSP All Rights Reserved
 
 <br><br>
 

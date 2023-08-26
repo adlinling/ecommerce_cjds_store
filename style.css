@@ -1,26 +1,114 @@
 body
 {
     background-color:#353535;
+    margin: 0;//this will remove gaps arounnd divs
 }
 
 
-table, td, th
-{
-    /*border-color: #600;*/
-    border-color: #252525;
-    border-style: solid;
-    text-align:center;
 
+
+
+@font-face {
+    font-family: "BebasNeue";
+    src: url(fonts/BebasNeue-Regular.ttf);
 }
+
+
+
+#header{
+  display:flex;
+  justify-content: center;
+  margin: 0 auto;
+  //max-width:1200px;
+  height:100px;
+  /*border: 1px white solid;*/
+  /*background-color:#474747;*/
+  background-color:#474747;
+}
+
+
+#storename{
+ font-family:BebasNeue;
+ font-size:3em;
+}
+
+
+#logo{
+  background-color:#676767;
+  padding:20px 30px;
+}
+
+.main{
+  margin: 0 auto;
+  max-width:1160px;
+  border 1px white solid;
+  background-color:#454545;
+  padding:20px;
+  color:#999999;
+  font-family:San-serif,Verdana,Arial;
+  font-size:0.8em;
+}
+
+
+.productgrid{
+  display:flex;
+  flex-wrap:wrap;
+  padding:30px;
+  justify-content: space-between;
+}
+
+
+.productsgriditem{
+  width:250px;
+  height:250px;
+  background-color:#454545;
+  padding:30px;
+  margin:20px;
+}
+
+
+#footer{
+  margin: 0 auto;
+  //max-width:1200px;
+  height:24px;
+  border 1px white solid;
+  background-color:#787878;
+  text-align:center;
+  padding-top:10px;
+  font-family:Arial;
+  font-size:0.9em;
+}
+
+
+font.navigation{
+  font-family: BebasNeue;
+  font-size:1.5em;
+  color:#f0f0f0;
+}
+
+font.navigation:hover{
+  font-family: BebasNeue;
+  font-size:1.5em;
+  color:#ffffff;
+}
+
+#navigation{
+  display:flex;
+  gap:10px;
+  justify-content:right;
+  margin: 0 auto;
+  //max-width:1200px;
+  border 1px white solid;
+  background-color:#676767;
+  font-size:0.9em;
+}
+
 
 
 div.nav:hover{
     background-color:#585858;
     float:right;
-    padding-right:10px;
-    padding-left:10px;
-    padding-top:4px;
-    padding-bottom:6px;
+    padding: 10px 8px 10px;
     color:#ffffff;
 }
 
@@ -28,25 +116,17 @@ div.nav:hover{
 div.nav{
     background-color:#676767;
     float:right;
-    padding-right:10px;
-    padding-left:10px;
-    padding-top:4px;
-    padding-bottom:6px;
+    /*padding: top leftright bottom*/
+    padding: 10px 8px 10px;
     color:#111111;
 }
 
 
 
-a {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
-a:hover {text-decoration:none;color:#ff0000;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
+a {text-decoration:none;color:#f0f0f0;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
+a:hover {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;font-size:0.9em;}
 a img {border: none; } 
 
-table
-{
-    border-width: 0 0 0px 0px;
-    border-spacing: 0;
-    border-collapse: collapse;
-}
 
 #noticediv,#results,#csvinputs,#rhubarboutput,#body
 {
@@ -61,6 +141,24 @@ table
 
 }
 
+
+
+table
+{
+    border-width: 0 0 0px 0px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+
+table, td, th
+{
+    /*border-color: #600;*/
+    border-color: #252525;
+    border-style: solid;
+    text-align:center;
+
+}
 
 
 td,th{
@@ -101,6 +199,7 @@ td,th{
 /*Flexbox */
 .container{
   display:flex;
+  flex-wrap:wrap;
   margin: 0 auto;
   #border: 1px black solid;
 }
@@ -108,6 +207,7 @@ td,th{
 
 .one, .two {
   flex: 1;
+  min-width:300px;
   #border: 1px black solid;
   #margin: 4px;
   padding: 10px;
@@ -116,9 +216,24 @@ td,th{
 
 
 
+.checkoutpg-container{
+  display:flex;
+  flex-direction: row;
+  flex-flow:row wrap;
+  justify-content:center;
+  background-color:#252525;
+  padding:10px;
+}
 
 
 
+
+.totalstable{
+  flex:2;
+  min-width:56%;
+  padding:0px;
+  background-color:#252525;
+}
 
 
 /*Flexbox grid*/
