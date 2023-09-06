@@ -8,6 +8,7 @@ $itemtochange = $obj->item;
 
 //echo "Item to change: $itemtochange<br><br>";
 
+//The vid is assigned to $itm
 list($itm, $change) = explode("#", $itemtochange);
 
 
@@ -32,11 +33,11 @@ foreach($whatsincart as $cartitem){
 
 		if($change == "more"){
 			$quantity++;
-		}
-
-
+		}else
 		if($change == "less"){
 			$quantity--;
+		}else{
+			$quantity = $change;
 		}
 
 		//echo "New quantity: $quantity<br>";
