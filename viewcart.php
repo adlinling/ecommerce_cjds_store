@@ -1,58 +1,58 @@
 <?php
-/* 
-Revisions:  This version implements ajax to enable deleting a single item from the cart
-*/
-
 
 include_once "functions.php";
 include_once "productslist.php";
 
+
+$host = $_SERVER['SERVER_NAME'];
+
+
+$viewcart_id = random_str(10);
+setcookie("vcid", $viewcart_id, time()+3600*24*7, "/", $host, FALSE);
+
+
 ?>
 
 
-<script language="javascript" type="text/javascript">
-<!--
 
-//See javascript_post.php on how this works
-function itemincart(item){
-	this.item = item;
+<script>
+function qtyinputchanged(vid){
+
+
+	onlynumbers(vid, 10);
+
+	let quantity = document.getElementById(vid).value;
+	//alert(vid + " " + quantity);
+	let item = vid+"#"+quantity;
+
+	const obj = new itemincart(item);
+
+	myJSON = JSON.stringify(obj);
+
+	//from https://www.freecodecamp.org/news/javascript-post-request-how-to-send-an-http-post-request-in-js/
+	fetch('changequantity.php', {
+		method: 'POST',
+		headers: {
+		'Content-Type': 'application/json'
+		},
+		body: myJSON
+	})
+	.then(response => response.text()) // Extract the response text
+	.then(result => {
+		// Update the HTML element with the response
+		document.getElementById("viewcart").innerHTML = result;
+	})
+	.catch(error => {
+		console.error('Error:', error);
+	});
+
+
+	event.preventDefault();
+
+
 }
 
-
-function sendFetchpostGR(event, phpreceiver, item){
-
-const obj = new itemincart(item);
-
-myJSON = JSON.stringify(obj);
-
-//from https://www.freecodecamp.org/news/javascript-post-request-how-to-send-an-http-post-request-in-js/
-  fetch('deleteitems.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: myJSON
-  })
-  .then(response => response.text()) // Extract the response text
-  .then(result => {
-    // Update the HTML element with the response
-    document.getElementById("viewcart").innerHTML = result;
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-
-
-  event.preventDefault();
-
-
-}
-
-
-
-//-->
 </script>
-
 
 <div style="text-align:center;padding:10px;background-color:#282828">
 <font style="font-family:San-serif,Verdana,Arial;color:#ffffff;"><h3>Shopping Cart</h3></font>
@@ -160,8 +160,9 @@ if(count($items) > 1){
 	<div class="grid-item"></div>
  	<div class="grid-item"></div>
  	<div class="grid-item"></div>
- 	<div class="grid-item">Quantity</div>
+ 	<div class="grid-item">Qty</div>
  	<div class="grid-item">Price Ea.</div>
+ 	<div class="grid-item">Total</div>
 
 	<?php
 
@@ -169,8 +170,9 @@ if(count($items) > 1){
 
 	foreach($cartitems as $vid => $quantity){
 
+		$itemtotal = $prices[$vid]*$quantity;
 
-		$subtotal = $subtotal + $prices[$vid]*$quantity;
+		$subtotal = $subtotal + $itemtotal;
 
 		$variantsarray = array();
 
@@ -211,16 +213,13 @@ if(count($items) > 1){
 		}
 
 
-
-		//$description = $decodedData['data']['variantNameEn'];
-		//$img = $decodedData['data']['variantImage'];
-
 		?> 
-		<div class='grid-item' onclick='sendFetchpostGR(event, "", "<?php echo "&".$vid."#".$prices[$vid]."#".$quantity;?>");'><a href="#">X</a></div>
-		<div class='grid-item'><?php echo "<a href='?pg=store&sku=$prodsku'>$img</a>";?></div>
- 		<div class='grid-item'><?php echo "<a href='?pg=store&sku=$prodsku'>$description</a>";?></div>
- 		<div class='grid-item'><?php echo $quantity;?></div>
- 		<div class='grid-item'><?php echo "\$".$prices[$vid];?></div>
+		<div class='grid-item' onclick='deleteitem(event, "", "<?="&".$vid."#".$prices[$vid]."#".$quantity;?>");'><div><a href="#">X</a></div></div>
+		<div class='grid-item'><?="<a href='?pg=store&sku=$prodsku'><img src='$img' alt='$img' style='height: 100%; width: 100%; object-fit: contain'></a>";?></div>
+ 		<div class='grid-item'><div style='padding:20px;'><?="<a href='?pg=store&sku=$prodsku'>$description</a>";?></div></div>
+ 		<div class='grid-item'><div class='more' onclick='changeqty(event, "", "<?=$vid;?>#less");'>&nbsp;-&nbsp;</div><input type='text' id='<?=$vid;?>' class='qty' value='<?=$quantity;?>' oninput='qtyinputchanged("<?=$vid;?>");'><div class='less' onclick='changeqty(event, "", "<?=$vid;?>#more");'>&nbsp;+&nbsp;</div></div>
+ 		<div class='grid-item'><div><?="\$".$prices[$vid];?></div></div>
+ 		<div class='grid-item'><?="\$".$itemtotal;?></div>
 		<?php
 
 
@@ -236,20 +235,24 @@ if(count($items) > 1){
 	<div class="grid-item"></div>
  	<div class="grid-item"></div>
  	<div class="grid-item"></div>
+ 	<div class="grid-item"></div>
  	<div class="grid-item">Subtotal</div>
- 	<div class="grid-item"><?php echo "\$".$subtotal;?></div>
+ 	<div class="grid-item"><?="\$".$subtotal;?></div>
 
 
 
 	<div class="grid-item"></div>
- 	<div class="grid-item"><a href='?pg=emptycart'>Empty Cart</a>&nbsp;&nbsp;&nbsp;<a href='?pg=store'>Continue Shopping</a></div>
+ 	<div class="grid-item"></div>
+ 	<div class="grid-item"></div>
  	<div class="grid-item"></div>
  	<div class="grid-item">
+
+
 
 	<?php
 		foreach($cartcontents as $cartcontent){
 
-			echo "<input type='hidden' name='items[]' value='$cartcontent'>";
+			echo "<input type='hidden' name='items[]' value='$cartcontent'><br>";
 
 		}
 
@@ -265,6 +268,7 @@ if(count($items) > 1){
 
 		echo "<input type='hidden' name='subtotal' value='$subtotal'>";
 
+
  		echo "<br><br><input type='submit' name='checkout' value='Checkout'>";
 	?>
 	</div>
@@ -273,7 +277,7 @@ if(count($items) > 1){
 	</form>	
 	</div>
 
-
+<a href='?pg=emptycart'>Empty Cart</a>&nbsp;&nbsp;&nbsp;<a href='?pg=store'>Continue Shopping</a>
 
 
 
