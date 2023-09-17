@@ -1,4 +1,8 @@
 <?php
+/* 
+Revisions:  This version implements passage of $viewcart_id value to checkout.php for authentication of the POST data once checkout.php receives it.
+*/
+
 
 include_once "functions.php";
 include_once "productslist.php";
@@ -6,19 +10,24 @@ include_once "productslist.php";
 
 $host = $_SERVER['SERVER_NAME'];
 
-
+//Create a unique string to be send along with the form data when the form is submitted to the checkout.php
 $viewcart_id = random_str(10);
+
+//Store the unique string in a form id cookie.  The Stripe checkout page will compare the value in the cookie with the 
+//value from $_SERVER['HTTP_COOKIE'] that is sent along with the form data
 setcookie("vcid", $viewcart_id, time()+3600*24*7, "/", $host, FALSE);
 
 
 ?>
 
 
+<script src="checkout.js"></script>
 
 <script>
 function qtyinputchanged(vid){
 
-
+	//You'll notice that each time a value is typed in, the focus is no longer in the text box.  
+	//That is because of ajax in this function refreshing the contents of the "viewcart" div with output of updatecart.php
 	onlynumbers(vid, 10);
 
 	let quantity = document.getElementById(vid).value;
@@ -54,12 +63,12 @@ function qtyinputchanged(vid){
 
 </script>
 
-<div style="text-align:center;padding:10px;background-color:#282828">
-<font style="font-family:San-serif,Verdana,Arial;color:#ffffff;"><h3>Shopping Cart</h3></font>
+<div style="text-align:center;padding:10px;background-color:#ffffff">
+<font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Shopping Cart</font>
 </div>
 
 <br/>
-<div style='background-color:#252525;padding:10px;'>
+<div style='background-color:#ffffff;padding:10px;'>
 
 <?php
 
@@ -146,6 +155,7 @@ if(count($items) > 1){
 	$subtotal = 0;
 
 	echo "<form name='myForm' method='POST' action='?pg=checkout'>";
+	//echo "<form name='myForm' method='POST' action='post_origin_check.php'>";
 	//echo "<form name='myForm' method='POST' action='http://localhost:4242/checkout.php'>";
 
 	/*
@@ -214,9 +224,9 @@ if(count($items) > 1){
 
 
 		?> 
-		<div class='grid-item' onclick='deleteitem(event, "", "<?="&".$vid."#".$prices[$vid]."#".$quantity;?>");'><div><a href="#">X</a></div></div>
+		<div class='grid-item' onclick='deleteitem(event, "", "<?="&".$vid."#".$prices[$vid]."#".$quantity;?>");'><div><a class='removeitem' href="#">X</a></div></div>
 		<div class='grid-item'><?="<a href='?pg=store&sku=$prodsku'><img src='$img' alt='$img' style='height: 100%; width: 100%; object-fit: contain'></a>";?></div>
- 		<div class='grid-item'><div style='padding:20px;'><?="<a href='?pg=store&sku=$prodsku'>$description</a>";?></div></div>
+ 		<div class='grid-item'><div style='padding:20px;'><?="<a class='prodlink' href='?pg=store&sku=$prodsku'>$description</a>";?></div></div>
  		<div class='grid-item'><div class='more' onclick='changeqty(event, "", "<?=$vid;?>#less");'>&nbsp;-&nbsp;</div><input type='text' id='<?=$vid;?>' class='qty' value='<?=$quantity;?>' oninput='qtyinputchanged("<?=$vid;?>");'><div class='less' onclick='changeqty(event, "", "<?=$vid;?>#more");'>&nbsp;+&nbsp;</div></div>
  		<div class='grid-item'><div><?="\$".$prices[$vid];?></div></div>
  		<div class='grid-item'><?="\$".$itemtotal;?></div>
@@ -269,7 +279,7 @@ if(count($items) > 1){
 		echo "<input type='hidden' name='subtotal' value='$subtotal'>";
 
 
- 		echo "<br><br><input type='submit' name='checkout' value='Checkout'>";
+ 		echo "<br><br><br><br><br><br><input type='submit' name='checkout' value='Checkout'>";
 	?>
 	</div>
 
@@ -277,14 +287,18 @@ if(count($items) > 1){
 	</form>	
 	</div>
 
-<a href='?pg=emptycart'>Empty Cart</a>&nbsp;&nbsp;&nbsp;<a href='?pg=store'>Continue Shopping</a>
+<?php
+//<a class='viewcart' href='?pg=emptycart'>Empty Cart</a>&nbsp;&nbsp;&nbsp;
+?>
+
+<a class='viewcart' href='?pg=store'>Continue Shopping</a>
 
 
 
 	<?php
 
 }else{ //if(count($items) > 1){
-	echo "Your cart is empty.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>  <a href='?pg=store'>Go to Store</a>";
+	echo "Your cart is empty.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>  <a class='viewcart' href='?pg=store'>Go to Store</a>";
 }
 
 
