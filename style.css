@@ -14,7 +14,7 @@ body
 
 @font-face {
     font-family: "AsapCondensed";
-    src: url(fonts/Asap_Condensed/AsapCondensed-Regular.ttf);
+    src: url(fonts/AsapCondensed-Regular.ttf);
 }
 
 
@@ -177,9 +177,8 @@ a:hover {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;
 a img {border: none; } 
 
 
-a.prodlink, a.login {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
-a.prodlink:hover, a.login:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
-
+a.prodlink, a.login, a.account, a.trackorder, a.invoice {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.prodlink:hover, a.login:hover, a.account:hover, a.trackorder:hover, a.invoice:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
 
 
 a.viewcart {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;}
@@ -413,7 +412,7 @@ input[type="password"] {
 .orders-top{
   display:flex;
   flex-direction: row;
-  background-color:#222222;
+  background-color:#ffffff;
   padding:8px;
 }
 
@@ -490,9 +489,11 @@ input[type="password"] {
 }
 
 
+
 #invoice, #orderdetails, #trackorder{
   padding:15px 0px 20px;
 }
+
 
 
 

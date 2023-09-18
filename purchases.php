@@ -1,12 +1,12 @@
-<div style="margin: 0 auto;padding:20px;text-align:left;background-color:#454545;background-image: url();">
+<div style="margin: 0 auto;padding:20px;text-align:left;background-color:#ffffff;background-image: url();">
 
-<div style='text-align:center;background-color:#353535;padding:20px;'>
-	<h1>Orders</h1>
+<div style="text-align:center;padding:10px;background-color:#ffffff">
+<font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Orders</font>
 </div>
 
 <?php
 /*
-Revisions:  No longer storing order information in .htm files.  Storing them in cjorders table instead. $contents is now assigned with what's from the table.
+Revisions:  Worked on appearance
 */
 
 
@@ -26,9 +26,9 @@ Revisions:  No longer storing order information in .htm files.  Storing them in 
 	include "functions.php";
 
 
-
 	include "dbconnect_prepstmt.php";
 
+	//regdate is the account number
 	$query = "SELECT regdate FROM cjusers WHERE sessionid=?";
 
 	$stmt = $conn->prepare($query); 
@@ -51,11 +51,12 @@ Revisions:  No longer storing order information in .htm files.  Storing them in 
 
 
 
+
+
 //echo "Account number: $account<br>";
 
 
-	//$query = "SELECT refnum, ordernum, recipient, ship_addr FROM cjorders WHERE account='$account'"; //This will get incomplete orders where the webhook from payment processor has not been received
-
+//$query = "SELECT refnum, ordernum, recipient, ship_addr FROM cjorders WHERE account='$account'"; //This will get incomplete orders where the webhook from payment processor has not been received
 
 	$query = "SELECT refnum, ordernum, recipient, ship_addr, json FROM cjorders WHERE account=? AND ordernum<>''";//<>'' means NOT emtpy
 
@@ -76,6 +77,13 @@ Revisions:  No longer storing order information in .htm files.  Storing them in 
 	$conn->close();
 
 
+
+	$refnums = array();
+	$ordernums = array();
+	$recipients = array();
+	$shipaddresses = array();
+	$jsons = array();
+
 	foreach($data as $key => $dataarray){
 		$refnums[] = $dataarray['refnum'];
 		$ordernums[] = $dataarray['ordernum'];
@@ -83,6 +91,7 @@ Revisions:  No longer storing order information in .htm files.  Storing them in 
 		$shipaddresses[] = $dataarray['ship_addr'];
 		$jsons[] = $dataarray['json'];
 	}
+
 
 echo "<br><br>";
 
@@ -182,8 +191,7 @@ if(count($refnums)){
 		?>
 
 		<div class="order-item"></div>
-		<div class="order-item"></div>
- 		<div class="order-item">Quantity</div>
+ 		<div class="order-item"></div>
  		<div class="order-item">Price Ea.</div>
 		<div class="order-item">Total</div>
 		</div>
@@ -220,15 +228,41 @@ if(count($refnums)){
 
 			if($paymethod == "paypal"){
 				$price = $item['unit_amount']['value'];
+				$vid = $item['sku'];
 				$quantity = $item['quantity'];
 				$itemname = $item['name'];
 			}else{
 
 				$breakitem = explode("#", $item);				
-				$price = $breakitem[2];
+				$vid = $breakitem[0];
 				$quantity = $breakitem[1];
-				$itemname = getVariantName($breakitem[0], $storeproducts);//function stored in functions.php
+				$price = $breakitem[2];
+				$itemname = getVariantName($vid, $storeproducts);//function stored in functions.php
 			}
+
+
+
+			$variantsarray = array();
+
+			foreach($storeproducts as $sku => $json){
+				//echo "$sku<br>$json<br><br>";
+				if(preg_match("/".$vid."/", $json)){
+					//echo "<b>$sku</b> has this vid!<br>";
+					$variantsarray = json_decode($storeproducts[$sku]);
+				}
+			}
+
+
+			foreach($variantsarray as $varkey => $variant){
+				//echo $variant->vid."<br>";
+				if($vid == $variant->vid){
+					$img = $variant->variantImage;
+					//$description = ucwords($variant->variantNameEn);
+					//$descripshort = substr($description, 0, 30);
+				}
+			}
+
+
 
 			$itemnameshort = substr($itemname, 0, 40);
 
@@ -246,9 +280,8 @@ if(count($refnums)){
 
 			$subtotal = $subtotal + $itemtotal;
 
-			echo "<div class='order-item'><a href='?pg=store&sku=$sku'><img src='' width='100' height='100'></a></div>";
-			echo "<div class='order-item'><a href='?pg=store&sku=$sku'>$itemname</a></div>";
-			echo "<div class='order-item' id='purchquantity'>".$quantity."</div>";
+			echo "<div class='order-item'><a href='?pg=store&sku=$sku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain'></a></div>";
+			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$sku'>$itemname</a></div></div>";
 			echo "<div class='order-item' id='purchprice'>$".$price."</div>";
 			echo "<div class='order-item' id='purchtotal'>\$".$itemtotal."</div>";
 			//echo $item['sku']."<br><br>";
@@ -260,21 +293,18 @@ if(count($refnums)){
 		//echo "</pre>";
 
 
-			echo "<div class='order-item' id='trackorder'><a href='?pg=track&ordernum=$ordernumber'>Track Order</a></div>";
-			echo "<div class='order-item'></div>";
+			echo "<div class='order-item' id='trackorder'><a class='trackorder' href='?pg=track&ordernum=$ordernumber'>Track Order</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Subtotal</div>";
 			echo "<div class='order-item'>\$$subtotal</div>";
 
-			echo "<div class='order-item' id='invoice'><a href='invoice.php?refnum=$refnum&ordernum=$ordernumber'>Invoice</a></div>";
-			echo "<div class='order-item'></div>";
+			echo "<div class='order-item' id='invoice'><a class='invoice' href='invoice.php?refnum=$refnum&ordernum=$ordernumber'>Invoice</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Shipping</div>";
 			echo "<div class='order-item'>\$$shipping</div>";
 
 			$grandtotal = $subtotal + $shipping;
 
-			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Grand Total</div>";
