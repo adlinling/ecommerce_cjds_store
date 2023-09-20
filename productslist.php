@@ -22,7 +22,7 @@ $storeproducts = array(
 
 
 //USB 3.0 Micro B Cable
-'CJJT1691339' => '[{"vid":"1628686421508763648","pid":"1628686421483597824","variantName":null,"variantNameEn":"Usb 3.0 Mobile Hard Disk Data Cable Black 0.5M","variantImage":"https:\/\/cc-west-usa.oss-accelerate.aliyuncs.com\/2f9df69c-e0dd-4368-883a-937a56e2e233.jpg","variantSku":"CJJT169133901AZ","variantUnit":"\u4e2a","variantProperty":"[]","variantKey":"Black-0.5M","variantLength":180,"variantWidth":100,"variantHeight":30,"variantVolume":540000,"variantWeight":120,"variantSellPrice":0.69,"createTime":"2023-02-23T09:21:17.000+00:00","variantStandard":"long=180,width=100,height=30","variantSugSellPrice":0.69},{"vid":"1628686421529735168","pid":"1628686421483597824","variantName":null,"variantNameEn":"Usb 3.0 Mobile Hard Disk Data Cable Black 0.3M","variantImage":"https:\/\/cc-west-usa.oss-accelerate.aliyuncs.com\/2f9df69c-e0dd-4368-883a-937a56e2e233.jpg","variantSku":"CJJT169133902BY","variantUnit":"\u4e2a","variantProperty":"[]","variantKey":"Black-0.3M","variantLength":180,"variantWidth":100,"variantHeight":30,"variantVolume":540000,"variantWeight":100,"variantSellPrice":0.54,"createTime":"2023-02-23T09:21:17.000+00:00","variantStandard":"long=180,width=100,height=30","variantSugSellPrice":0.54}]',
+'CJJT1691339' => '[{"vid":"1628686421508763648","pid":"1628686421483597824","variantName":null,"variantNameEn":"USB 3.0 to Micro B Cable Black 0.5M","variantImage":"https:\/\/cc-west-usa.oss-accelerate.aliyuncs.com\/2f9df69c-e0dd-4368-883a-937a56e2e233.jpg","variantSku":"CJJT169133901AZ","variantUnit":"\u4e2a","variantProperty":"[]","variantKey":"Black-0.5M","variantLength":180,"variantWidth":100,"variantHeight":30,"variantVolume":540000,"variantWeight":120,"variantSellPrice":0.69,"createTime":"2023-02-23T09:21:17.000+00:00","variantStandard":"long=180,width=100,height=30","variantSugSellPrice":0.69},{"vid":"1628686421529735168","pid":"1628686421483597824","variantName":null,"variantNameEn":"USB 3.0 to Micro B Cable Black 0.3M","variantImage":"https:\/\/cc-west-usa.oss-accelerate.aliyuncs.com\/2f9df69c-e0dd-4368-883a-937a56e2e233.jpg","variantSku":"CJJT169133902BY","variantUnit":"\u4e2a","variantProperty":"[]","variantKey":"Black-0.3M","variantLength":180,"variantWidth":100,"variantHeight":30,"variantVolume":540000,"variantWeight":100,"variantSellPrice":0.54,"createTime":"2023-02-23T09:21:17.000+00:00","variantStandard":"long=180,width=100,height=30","variantSugSellPrice":0.54}]',
 
 
 //High-speed Mobile Solid State External Drive
@@ -50,7 +50,7 @@ $products['CJJSCCGT00017']['title'] = "Notebook Desktop Solid State Drive";
 $products['CJLY1428781']['title'] = "Silk Ice Silk Pajamas Ladies Thin Homewear";
 $products['CJSJ1089759']['title'] = "Multifunctional Five-In-One Magnetic Wireless Charger";
 $products['CJJT1301531']['title'] = "Double-sided Flannel Blanket Air Conditioning Blanket Napping Blanket Cover Blanket";
-$products['CJJT1691339']['title'] = "USB 3.0 to Micro B Cable";
+$products['CJJT1691339']['title'] = "USB 3.0 to Micro B Cable Black";
 $products['CJYD1257234']['title'] = "High-speed Mobile Solid State External Drive";
 $products['CJYD1149532']['title'] = "2.5 Inch USB3.0 SATA Mobile Hard Drive Enclosure Without Screws";
 
@@ -68,6 +68,14 @@ $products['CJYD1149532']['image'] = "https://cc-west-usa.oss-accelerate.aliyuncs
 
 
 
+
+$products['CJJSCCGT00017']['profit'] = "12";
+$products['CJLY1428781']['profit'] = "7";
+$products['CJSJ1089759']['profit'] = "12";
+$products['CJJT1301531']['profit'] = "12";
+$products['CJJT1691339']['profit'] = "5";
+$products['CJYD1257234']['profit'] = "12";
+$products['CJYD1149532']['profit'] = "12";
 
 
 
