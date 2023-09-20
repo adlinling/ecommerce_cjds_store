@@ -177,13 +177,19 @@ a:hover {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;
 a img {border: none; } 
 
 
-a.prodlink, a.login, a.account, a.trackorder, a.invoice {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
-a.prodlink:hover, a.login:hover, a.account:hover, a.trackorder:hover, a.invoice:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.prodlink, a.login, a.account, a.trackorder, a.invoice, a.trackingvieworders {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.prodlink:hover, a.login:hover, a.account:hover, a.trackorder:hover, a.invoice:hover, trackingvieworders:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
 
 
 a.viewcart {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;}
 a.viewcart:hover {text-decoration:none;color:#0000ff;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;}
 a.viewcart {border: none; } 
+
+
+
+a.newpw {color:#808080;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:0.9em;}
+a.newpw:hover {color:#0000ff;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:0.9em;}
+a.newpw {border: none; } 
 
 
 #noticediv,#results,#csvinputs,#rhubarboutput,#body
@@ -610,7 +616,7 @@ input[type="text"] {
 .tracking-container{
   display:flex;
   flex-direction: row;
-  background-color:#333333;
+  background-color:#ffffff;
   width:100%;
   justify-content: space-evenly;
 
@@ -621,7 +627,7 @@ input[type="text"] {
   display:flex;
   flex-direction: row;
   flex:2;
-  background-color:#303030;
+  background-color:#ffffff;
   padding:20px;
 }
 
@@ -655,7 +661,7 @@ input[type="text"] {
   display:flex;
   flex-direction: column;
   flex:4;
-  background-color:#353535;
+  background-color:#ffffff;
   padding:0px;
 }
 
@@ -665,7 +671,7 @@ input[type="text"] {
   flex-direction: row;
   padding:4px;
   margin:4px;
-  background-color:#303030;
+  background-color:#ffffff;
 }
 
 
