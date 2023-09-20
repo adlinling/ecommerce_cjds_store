@@ -1,14 +1,15 @@
 <script src="checkout.js"></script>
 
+
 <?php
 /* 
-Revisions:  Worked on page layout
+Revisions:  $products[$sku]['imageset'] from productslist.php now loads into the image carousel
 */
 
 
 
 include_once "functions.php";
-include_once "productslist.php";
+include "productslist.php";
 
 $thisfile = $_SERVER['PHP_SELF'];
 
@@ -17,7 +18,7 @@ $sku = isset($_GET['sku'])?$_GET['sku']:NULL;
 
 ?>
 
-<div style="margin:0 auto;padding:20px;text-align:left;background-color:#333333;background-image: url();background-position: 0% 20%;background-repeat: no-repeat;">
+<div style="margin:0 auto;padding:20px;text-align:left;background-color:#ffffff;background-image: url();background-position: 0% 20%;background-repeat: no-repeat;">
 
 
 
@@ -27,8 +28,8 @@ $sku = isset($_GET['sku'])?$_GET['sku']:NULL;
 
 
 
-<div style="text-align:center;padding:10px;background-color:#282828;margin:2px;">
-<font style="font-family:San-serif,Verdana,Arial;color:#ffffff;"><h3>
+<div style="text-align:center;padding:10px;background-color:#ffffff;margin:2px;">
+<font style="font-family:BebasNeue,San-serif,Verdana,Arial;font-size:1.9em;color:#000000;">
 
 <?php
 if($sku){
@@ -39,7 +40,7 @@ if($sku){
 
 ?>
 
-</h3></font>
+</font>
 </div>
 
 
@@ -52,8 +53,6 @@ if($sku){
 if($sku){
 
 
-	include "productslist.php";
-
 
 	$productData = json_decode($storeproducts[$sku]);
 
@@ -63,8 +62,12 @@ if($sku){
 
 	$firstimg = NULL;
 	$firstprice = NULL;
-	$profit = 12;
+	$profit = $products[$sku]['profit'];
 	$items = array();
+
+	$prodimagesbadkeys = array();
+	$productimages = array();
+	$productimageset = $products[$sku]['imageset'];
 
 
 	if(isset($productData)){
@@ -74,10 +77,27 @@ if($sku){
 			$varname = $subarray->variantKey;
 			$price = $subarray->variantSellPrice + $profit;
 			$img = $subarray->variantImage;
+
+			$prodimagesbadkeys[] = $img;
 			$variants[$varname] = $vid."#".$price."#".$img;
 
 		}
 
+		//If there are duplicate image urls, this will result in missing keys
+		$prodimagesbadkeys = array_unique($prodimagesbadkeys);
+
+		//echo "<pre>";
+		//print_r($prodimagesbadkeys);
+		//echo "</pre>";
+
+		//Make a new images array that has the keys reset to 0, 1, 2 . . . 
+		foreach($prodimagesbadkeys as $prodimage){
+			$productimages[] = $prodimage;
+		}
+
+		//echo "<pre>";
+		//print_r($productimages);
+		//echo "</pre>";
 
 
 		ksort($variants);//Short buy array index name.  krsort() - Sorts an array by key in descending order
@@ -127,11 +147,56 @@ if($sku){
 
 
 
-	echo "<div class='one' id='myDiv'>";
+	echo "<div class='one'>";
 
-	echo "<div style='height:500px;background-color:rgba(40,40,40,1);'>";
-	echo "$firstimg<br>";
+	
+	echo "<div class='displaycontainer'>";
+	echo "<div id='prevBtndisp'>&lt;</div>";
+	echo "<div id='display' style='height:500px;background-color:rgba(40,40,40,1);'>";
+
+	//https://stackoverflow.com/questions/3029422/how-to-auto-resize-an-image-while-maintaining-aspect-ratio
+	echo "<img id='productImg' src='$firstimg' style='height: 100%; width: 100%; object-fit: contain;' onclick='modalpop(\"productImg\");'><br>";
 	echo "</div>";
+	echo "<div id='nextBtndisp'>&gt;</div>";
+	echo "</div>";//class="displaycontainer"
+
+
+?>
+
+
+  <div class="carousel">
+    <div id="leftBtn">&lt;</div>
+    <div class="carousel-container">
+<?php 
+
+	foreach($productimageset as $imgkey => $productimg){
+		echo '<img class="carousel-slide" src="'.$productimg.'" alt="Product" onclick="displayimg(this, '.$imgkey.');">';
+	}
+
+
+?>
+
+
+
+
+    </div>
+    <div id="rightBtn">&gt;</div>
+  </div>
+
+
+<?php
+
+
+	echo "</div>";//class="one"
+
+	echo "<div class='two'>";
+
+
+
+	echo $products[$sku]['details']."<br>";
+
+
+	echo "<div id='myDiv'>";
 
 	echo "Price: \$$firstprice<br>";
 
@@ -141,37 +206,46 @@ if($sku){
 		echo "Out of stock<br>";
 	}
 
+	echo "</div>";
 
-	echo "</div>";//class="one"
-
-	echo "<div class='two'>";
-
-	echo $products[$sku]['details']."<br>";
-
-
+	echo "<br><br><br>";
 
 	echo "<form name='myForm' action='?pg=addtocart' method='post'>";
 
 
-	echo "Size: <select name='variant' onChange='updateProdctInfo();'>";
+	//echo "Option: <select name='variant' onChange='updateProdctInfo();'>";
+	echo "Option: <select name='variant' onChange='loadtodisplay(\"blah\");'>";
 
 	foreach($variants as $sizeoption => $vidNpriceNimg){
-		$separate = explode("#", $vidNpriceNimg);
-		$vidNprice = $separate[0]."#".$separate[1];
+		//$separate = explode("#", $vidNpriceNimg);
+		//$vidNprice = $separate[0]."#".$separate[1];
 
-		echo "<option value='$vidNprice'>$sizeoption</option>";
+		echo "<option value='$vidNpriceNimg'>$sizeoption</option>";
 	}
 
-	echo "</select><br/>";
+	echo "</select><br>";
 
-	echo "Quantity: <select name='quantity'>";
-	for($qant=1;$qant<=100;$qant++){
-		echo "<option value='$qant'>$qant</option>";
-	}
-	echo "</select>";
+
+
+	?>
+	<div style="padding: 4px 0px;">Quantity:</div>
+	<div id="qtycontainer">
+	<div class="more" onclick="changequantity('less');" >&nbsp;&nbsp;-&nbsp;&nbsp;</div>
+	<input type="text" name="quantity" id="quantity" value="1" oninput="onlynumbers('quantity', 10000);" >
+	<div class="less" onclick="changequantity('more');">&nbsp;&nbsp;+&nbsp;&nbsp;</div>
+	&nbsp;&nbsp;&nbsp;<input type='submit' name='submit' value='Add to Cart'>
+	</div>
+
+
+	<?php
+	//echo "<select name='quantity'>";
+	//for($qant=1;$qant<=100;$qant++){
+		//echo "<option value='$qant'>$qant</option>";
+	//}
+	//echo "</select>";
 
 	//echo "<input type='submit' value='Add to Cart' onClick='updateProdctInfo();'>";
-	echo "<input type='submit' name='submit' value='Add to Cart'>";
+	echo "";
 	echo "</form>";
 
 
@@ -182,17 +256,26 @@ if($sku){
 
 }else{
 
-	echo "<div class='productgrid'>";
+	echo "<div class='productgrid'>\n";
 	//echo "<br><br><br>";
 
-	echo "<div class='productsgriditem'>Pajamas: <a href='$thisfile?pg=store&sku=CJLY1428781'>CJLY1428781</a></div>";
-	echo "<div class='productsgriditem'>Wirelss charger: <a href='$thisfile?pg=store&sku=CJSJ1089759'>CJSJ1089759</a></div>";
-	echo "<div class='productsgriditem'>SSD: <a href='$thisfile?pg=store&sku=CJJSCCGT00017'>CJJSCCGT00017</a></div>";
+	foreach($storeproducts as $sku => $prodjson){
+		$imgurl = $products[$sku]['image'];
+		//$imgurl = "image0.png";
+		$title = $products[$sku]['title'];
+		echo "<div class='productsgriditem'><a class='prodlink' href='$thisfile?pg=store&sku=$sku'><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div><div class='prodtitle'>$title</div></a></div>\n";
+	}
 
-	echo "<div class='productsgriditem'>Pajamas: <a href='$thisfile?pg=store&sku=CJLY1428781'>CJLY1428781</a></div>";
-	echo "<div class='productsgriditem'>Wirelss charger: <a href='$thisfile?pg=store&sku=CJSJ1089759'>CJSJ1089759</a></div>";
-	echo "<div class='productsgriditem'>SSD: <a href='$thisfile?pg=store&sku=CJJSCCGT00017'>CJJSCCGT00017</a></div>";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Pillows</a></div>\n";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Eye Covers</a></div>\n";
 
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Shirts</a></div>\n";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Mugs</a></div>\n";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Clocks</a></div>\n";
+
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Lamps</a></div>\n";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Slippers</a></div>\n";
+	//echo "<div class='productsgriditem'><a href=''><div class='prodimgdiv'><img class='productgridimg' src='$imgurl'></div>Toothbrushes</a></div>\n";
 
 	echo "</div>";
 
@@ -210,8 +293,12 @@ if($sku){
 
 
 <div id="social">
-<h5 style="color:#ffffff;text-align:center;">Tell Your Friends About Us</h5>
-Facebook Twitter Youtube Google Plus  Sign up for our newsletter
+<div>
+
+Facebook Twitter Youtube
+<br>
+Sign up for our newsletter
+</div>
 </div>
 
 
