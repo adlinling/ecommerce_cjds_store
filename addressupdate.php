@@ -86,7 +86,7 @@ $conn->close();
 
 Information Updated!<br>
 <br><br><br>
-<a href="?pg=settings">OK</a>
+<a style="text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;"  href="?pg=settings">OK</a>
 
 <?php
 }
