@@ -13,17 +13,50 @@
 
 $sku = isset($_GET['sku'])?$_GET['sku']:0;
 
-//include "dbconnect_prepstmt.php";
+
 
 
 
 if(isset($_POST['yes'])){
-	echo "Delete product with SKU $sku";	
+
+	//echo "Deleting product with SKU $sku";	
+
+	include "dbconnect_prepstmt.php";
+
+	$query = "DELETE FROM cjproducts WHERE sku = ?";
+
+	$stmt = $conn->prepare($query);
+	$stmt->bind_param("s", $sku);
+	$stmt->execute();
+
+	// Check for errors and affected rows
+	if ($stmt->error) {
+		die("Error during execution: " . $stmt->error);
+	}
+
+	$affectedRows = $stmt->affected_rows;
+
+	if($affectedRows){
+		//echo "Number of affected rows: " . $affectedRows;
+		echo "Product with SKU $sku deleted.";
+	}else{
+		echo "Failed to delete product with the SKU $sku.";
+	}
+
+
+	echo "<br><br><a class='prodlink' href='?pg=editproduct'>OK</a>";
+
+	$stmt->close();
+	$conn->close();
+
 }else
 if(isset($_POST['no'])){
 
 
-	echo "Product not deleted";
+	echo "Deletion cancelled";
+	echo "<br><br><a class='prodlink' href='?pg=editproduct'>OK</a>";
+
+
 
 }else{
 	?>
