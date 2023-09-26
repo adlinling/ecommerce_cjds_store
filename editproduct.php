@@ -270,10 +270,6 @@ if($sku){
 		$json = str_replace($oldtitle, $title, $_POST['json']);
 
 
-		//$title = str_replace($quotefind, $quotereplace, $title);
-		//$title = htmlentities($title, ENT_QUOTES);
-
-
 		$json = htmlspecialchars($json, ENT_QUOTES);
 
 		$title = htmlspecialchars($title, ENT_QUOTES);
