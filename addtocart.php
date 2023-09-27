@@ -20,5 +20,3 @@ setcookie("cart", $cart_update, time()+3600*24*7, "/", $host);
 
 header("Location: index.php?pg=viewcart");
 ?>
-
-

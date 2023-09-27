@@ -1,6 +1,6 @@
 <?php
 /* 
-Revisions:  This version implements passage of $viewcart_id value to checkout.php for authentication of the POST data once checkout.php receives it.
+Revisions:  Made changes related to addtocart.php
 */
 
 
@@ -98,6 +98,11 @@ $items = isset($_COOKIE['cart'])?explode("&", $_COOKIE['cart']):array();
 $cartitems = array();
 $prices = array();
 
+$find = array("singquote", "dubquote");
+$replace = array("&#039;", "&quot;");
+
+
+
 if(count($items) > 1){
 
 
@@ -111,32 +116,31 @@ if(count($items) > 1){
 
 		//Consolidate the cart in case an item is added to cart more than onces
 		foreach($items as $itemkey => $item){
-			if($itemkey > 0){
 
-				//echo "$item<br/>";
+			//echo "$item<br/>";
 
-				$breakitem = explode("#", $item);
-				//$breakitem[0] is vid
-				//$breakitem[1] is price
-				//$breakitem[2] is quantity
+			$breakitem = explode("#", $item);
+			//$breakitem[0] is vid
+			//$breakitem[1] is price
+			//$breakitem[2] is quantity
 
-				if(isset($cartitems[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
-					$cartitems[$breakitem[0]] = $cartitems[$breakitem[0]] + $breakitem[2];
-				}else{
-					$cartitems[$breakitem[0]] = $breakitem[2];
-				}
-
-
-				if(!isset($prices[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
-					$prices[$breakitem[0]] =  $breakitem[1];
-				}else{
-
-					if(!($prices[$breakitem[0]] == $breakitem[1])){
-						//Price values in the cookies for this vid is not the same
-					}
-				}
-
+			if(isset($cartitems[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
+				$cartitems[$breakitem[0]] = $cartitems[$breakitem[0]] + $breakitem[2];
+			}else{
+				$cartitems[$breakitem[0]] = $breakitem[2];
 			}
+
+
+			if(!isset($prices[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
+				$prices[$breakitem[0]] =  $breakitem[1];
+			}else{
+
+				if(!($prices[$breakitem[0]] == $breakitem[1])){
+					//Price values in the cookies for this vid is not the same
+				}
+			}
+
+
 		}
 
 
@@ -190,6 +194,7 @@ if(count($items) > 1){
 			//echo "$sku<br>$json<br><br>";
 			if(preg_match("/".$vid."/", $json)){
 				//echo "<b>$sku</b> has this vid!<br>";
+				$prodsku = $sku;
 				$variantsarray = json_decode($storeproducts[$sku]);
 			}
 		}
@@ -207,20 +212,14 @@ if(count($items) > 1){
 			//echo $variant->vid."<br>";
 			if($vid == $variant->vid){
 				$img = $variant->variantImage;
-				$description = ucwords($variant->variantNameEn);
-				$descripshort = substr($description, 0, 30);
+				//echo "variantNameEng ".$variant->variantNameEn."<br>";
+				$title = str_replace($find, $replace, $variant->variantNameEn);
+				//echo "Title: $title<br>";
+				$description = ucwords($title);
+				//$descripshort = substr($description, 0, 20);
 			}
 		}
 
-
-		foreach($products as $prodkey => $product){
-			$productname = $product['title'];
-			//echo "$productname <br>";
-			if(preg_match("/$descripshort/i", $productname)){
-				//echo "$prodkey $productname<br>";
-				$prodsku = $prodkey;
-			}
-		}
 
 
 		?> 
@@ -298,7 +297,7 @@ if(count($items) > 1){
 	<?php
 
 }else{ //if(count($items) > 1){
-	echo "Your cart is empty.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br>  <a class='viewcart' href='?pg=store'>Go to Store</a>";
+	echo "Your cart is empty.";
 }
 
 
