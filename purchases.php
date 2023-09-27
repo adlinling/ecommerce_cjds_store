@@ -6,7 +6,7 @@
 
 <?php
 /*
-Revisions:  Worked on appearance
+Revisions:  Changed to a new way to find the value for $prodsku
 */
 
 
@@ -248,6 +248,7 @@ if(count($refnums)){
 				//echo "$sku<br>$json<br><br>";
 				if(preg_match("/".$vid."/", $json)){
 					//echo "<b>$sku</b> has this vid!<br>";
+					$prodsku = $sku;
 					$variantsarray = json_decode($storeproducts[$sku]);
 				}
 			}
@@ -257,21 +258,6 @@ if(count($refnums)){
 				//echo $variant->vid."<br>";
 				if($vid == $variant->vid){
 					$img = $variant->variantImage;
-					//$description = ucwords($variant->variantNameEn);
-					//$descripshort = substr($description, 0, 30);
-				}
-			}
-
-
-
-			$itemnameshort = substr($itemname, 0, 40);
-
-			foreach($products as $prodkey => $product){
-				$productname = $product['title'];
-
-				if(preg_match("/$itemnameshort/i", $productname)){
-					//echo "$prodkey $productname<br>";
-					$sku = $prodkey;
 				}
 			}
 
@@ -280,8 +266,8 @@ if(count($refnums)){
 
 			$subtotal = $subtotal + $itemtotal;
 
-			echo "<div class='order-item'><a href='?pg=store&sku=$sku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain'></a></div>";
-			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$sku'>$itemname</a></div></div>";
+			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain'></a></div>";
+			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a></div></div>";
 			echo "<div class='order-item' id='purchprice'>$".$price."</div>";
 			echo "<div class='order-item' id='purchtotal'>\$".$itemtotal."</div>";
 			//echo $item['sku']."<br><br>";
