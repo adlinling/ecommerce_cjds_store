@@ -1,109 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>
+CJ Dev
+</title>
+<link href='invoice.css' rel='stylesheet'>
+</head>
+
+<body>
+
 <?php
 /*
-Revisions:  See revision notes in purchases_10.php
+Revisions:  Shipping method now shows the number of days for shipping
 */
 ?>
 
-<style>
-
-.invoice-container{
-  display:block;
-  #background-color:#293829;
-  margin:20px;
-}
-
-
-.invoice-top{
-  text-align:left;
-  #border: 1px #298392 solid;
-}
-
-
-.invoice-title{
-  text-align:center;
-}
-
-
-
-.invoice-shipdate, .payment-title{
-  text-align:center;
-  border: 2px #392839 solid;
-  padding:10px;
-}
-
-.invoice-items{
-  display:flex;
-  #background-color:#583929;
-  border-left: 2px #583929 solid;
-  border-right: 2px #583929 solid;
-  justify-content:space-between;
-}
-
-
-.invoice-items-left{
-  text-align:left
-  #background-color:#583929;
-  padding:10px;
-  flex:50;
-}
-
-
-.invoice-items-quantity{
-  text-align: center;
-  #background-color:#583929;
-  padding:10px;
-  flex:1;
-}
-
-
-
-
-.invoice-items-price{
-  text-align:center;
-  #background-color:#583929;
-  padding:10px;
-  flex:2;
-}
-
-
-
-.invoice-shipaddr{
-  text-align:left;
-  #background-color:#492839;
-  border: 2px #583929 solid;
-  margin-bottom:30px;
-  padding:10px;
-}
-
-
-.invoice-payment{
-  display:flex;
-  border-left: 2px #392839 solid;
-  border-right: 2px #392839 solid;
-  border-bottom: 2px #392839 solid;
-  justify-content: space-between;
-
-}
-
-
-.billing{
-  padding:10px;
-  flex:4;
-}
-
-.payment-totals-labels{
-  text-align:right;
-  flex:30;
-  padding:10px;
-}
-
-.payment-totals{
-  padding:10px;
-  text-align:right;
-  flex:1;
-}
-
-</style>
 
 
 <?php
@@ -194,7 +105,7 @@ $orderdate = date("F j, Y", $refnum);
 			$country = $orderinfo['resource']['purchase_units'][0]['shipping']['address']['country_code'];
 
 			$custom_id = $orderinfo['resource']['purchase_units'][0]['custom_id'];
-			$breakcustom = explode("-", $custom_id);
+			$breakcustom = explode("#", $custom_id);
 			$shippingmethod = $breakcustom[0];
 		}
 
@@ -371,7 +282,12 @@ echo "$city, $state $zip<br>";
 
 echo $countries[$country]."<br><br>";
 
-echo "<b>Shipping Method:</b><br> $shippingmethod<br>";
+$shippingmethod = explode("&", $shippingmethod);
+
+$shippingname = $shippingmethod[0];
+$shippingtime = $shippingmethod[1];
+
+echo "<b>Shipping Method:</b><br> $shippingname<br>$shippingtime days";
 echo "<br><br>";
 
 ?>
@@ -432,3 +348,5 @@ echo "<b>\$$grandtotal</b>";
 
 </div>
 
+</body>
+</html>
