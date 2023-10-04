@@ -43,15 +43,11 @@ session_destroy();
 	$stmt->close();
 	$conn->close();
 
+	header("Location: index.php?pg=store");
+	//<div style="margin: 0 auto;width:960px;border 1px white solid;background-color:#ffffff;padding:20px;">
+	//You're logged out.
 
-?>
 
-
-
-<div style="margin: 0 auto;width:960px;border 1px white solid;background-color:#454545;padding:20px;">
-You're logged out.
-
-<?php
 
 for($i=0;$i<30;$i++){
 	echo "<br/>";
