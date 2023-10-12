@@ -1,6 +1,6 @@
 <?php
 /* 
-Revisions:  Made changes related to addtocart.php
+Revisions:  Added a "Processing . . please wait" modal notification to the checkout form so user will not think the page has froze up when the Checkout button is pressed
 */
 
 
@@ -21,8 +21,8 @@ setcookie("vcid", $viewcart_id, time()+3600*24*7, "/", $host, FALSE);
 ?>
 
 
-<script src="checkout.js"></script>
-
+<script src="checkout.js?v=231005_02"></script>
+<link href='imgpopup.css' rel='stylesheet'>
 <script>
 function qtyinputchanged(vid){
 
@@ -62,6 +62,13 @@ function qtyinputchanged(vid){
 }
 
 </script>
+
+<!-- The View Cart Modal -->
+<div id="viewcartModal" class="modal">
+  <div id="viewcartcaption" style="background-color:rgb(0,0,0,0);text-align:center;color:#ffffff;margin:0 auto;"></div>
+</div>
+
+
 
 <div style="text-align:center;padding:10px;background-color:#ffffff">
 <font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Shopping Cart</font>
@@ -103,7 +110,7 @@ $replace = array("&#039;", "&quot;");
 
 
 
-if(count($items) > 1){
+if(count($items)){
 
 
 
@@ -158,7 +165,7 @@ if(count($items) > 1){
 
 	$subtotal = 0;
 
-	echo "<form name='myForm' method='POST' action='?pg=checkout'>";
+	echo "<form name='myForm' method='POST' action='?pg=checkout' onsubmit='viewcartmodalalert(\"Processing. . . Please wait\");'>";
 	//echo "<form name='myForm' method='POST' action='post_origin_check.php'>";
 	//echo "<form name='myForm' method='POST' action='http://localhost:4242/checkout.php'>";
 
@@ -296,8 +303,9 @@ if(count($items) > 1){
 
 	<?php
 
-}else{ //if(count($items) > 1){
+}else{ //if(count($items)){
 	echo "Your cart is empty.";
+	//echo $_COOKIE['cart'];
 }
 
 
