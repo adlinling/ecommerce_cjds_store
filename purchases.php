@@ -77,6 +77,10 @@ Revisions:  Changed to a new way to find the value for $prodsku
 	$conn->close();
 
 
+	//echo "<pre>";
+	//print_r($data);
+	//echo "</pre>";
+
 
 	$refnums = array();
 	$ordernums = array();
@@ -266,10 +270,10 @@ if(count($refnums)){
 
 			$subtotal = $subtotal + $itemtotal;
 
-			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain'></a></div>";
+			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain;'></a></div>";
 			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a></div></div>";
-			echo "<div class='order-item' id='purchprice'>$".$price."</div>";
-			echo "<div class='order-item' id='purchtotal'>\$".$itemtotal."</div>";
+			echo "<div class='order-item' id='purchprice'>$".number_format($price, 2)."</div>";
+			echo "<div class='order-item' id='purchtotal'>\$".number_format($itemtotal, 2)."</div>";
 			//echo $item['sku']."<br><br>";
 		}
 
@@ -287,14 +291,14 @@ if(count($refnums)){
 			echo "<div class='order-item' id='invoice'><a class='invoice' href='invoice.php?refnum=$refnum&ordernum=$ordernumber'>Invoice</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Shipping</div>";
-			echo "<div class='order-item'>\$$shipping</div>";
+			echo "<div class='order-item'>\$".number_format($shipping, 2)."</div>";
 
 			$grandtotal = $subtotal + $shipping;
 
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Grand Total</div>";
-			echo "<div class='order-item'>\$$grandtotal</div>";
+			echo "<div class='order-item'>\$".number_format($grandtotal, 2)."</div>";
 
 		echo "</div>";
 
