@@ -11,7 +11,7 @@ CJ Dev
 
 <?php
 /*
-Revisions:  Shipping method now shows the number of days for shipping
+Revisions:  Implemented currency symbols
 */
 ?>
 
@@ -95,7 +95,8 @@ $orderdate = date("F j, Y", $refnum);
 			$subtotal = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['item_total']['value'];
 			$shippingcost = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['shipping']['value'];
 			$items = $orderinfo['resource']['purchase_units'][0]['items'];
-
+			$currency = "USD";
+			$exchangerate = 1;
 
 			$recipient = $orderinfo['resource']['purchase_units'][0]['shipping']['name']['full_name'];
 			$street = $orderinfo['resource']['purchase_units'][0]['shipping']['address']['address_line_1'];
@@ -114,6 +115,8 @@ $orderdate = date("F j, Y", $refnum);
 
 			$payprocessor = "stripe";
 			$subtotal = $orderinfo['data']['object']['metadata']['subtotal'];
+			$currency = $orderinfo['data']['object']['currency'];
+			$exchangerate = $orderinfo['data']['object']['metadata']['exchangerate'];
 			$shippingcost = $orderinfo['data']['object']['metadata']['shipping'];
 			$grandtotal = $subtotal + $shippingcost;
 			$itemsbought = $orderinfo['data']['object']['metadata']['purchases'];
@@ -153,6 +156,25 @@ $orderdate = date("F j, Y", $refnum);
 		//print_r($orderinfo);
 		//echo "</pre>";
 
+		if(preg_match("/jpy/i", $currency)){
+			$currsymbol = "&yen;";
+		}else
+		if(preg_match("/inr/i", $currency)){
+			$currsymbol = "&#8377;";
+		}else
+		if(preg_match("/eur/i", $currency)){
+			$currsymbol = "&euro;";
+		}else
+		if(preg_match("/pkr/i", $currency)){
+			$currsymbol = "Rs";
+		}else
+		if(preg_match("/gbp/i", $currency)){
+			$currsymbol = "&pound;";
+		}else{
+			$currsymbol = "&dollar;";
+		}
+
+
 
 ?>
 
@@ -164,8 +186,6 @@ $orderdate = date("F j, Y", $refnum);
 Ecommerestore.com<br>
 123 Street<br>
 Big City, State, 39283<br><br>
-
-
 Invoice for Order #<?php echo $ordernum;?><br>
 Print this page for your records<br><br>
 </div>
@@ -258,7 +278,10 @@ foreach($items as $itkey => $item){
 		$breakitem = explode("#", $item);
 		$itemprice = $breakitem[2];
 	}
-	echo "\$$itemprice<br><br>";
+
+	$convertedprice = $itemprice*$exchangerate;
+
+	echo "$currsymbol".number_format($convertedprice, 2)."<br><br>";
 }
 
 ?>
@@ -323,7 +346,7 @@ echo $countries[$country_bill]."<br>";
 echo "Subtotal:<br>";
 echo "Shipping:<br>";
 echo "<br>";
-echo "<b>Grand Total:</b>";
+echo "<b>Grand Total (".strtoupper($currency)."):</b>";
 ?>
 </div>
 
@@ -331,10 +354,10 @@ echo "<b>Grand Total:</b>";
 <div class="payment-totals">
 
 <?php
-echo "\$$subtotal<br>";
-echo "\$$shippingcost<br>";
+echo "$currsymbol".number_format($subtotal, 2)."<br>";
+echo "$currsymbol".number_format($shippingcost, 2)."<br>";
 echo "---------<br>";
-echo "<b>\$$grandtotal</b>";
+echo "<b>$currsymbol".number_format($grandtotal, 2)."</b>";
 ?>
 </div>
 
