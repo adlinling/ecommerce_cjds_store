@@ -6,7 +6,7 @@
 
 <?php
 /*
-Revisions:  Changed to a new way to find the value for $prodsku
+Revisions:  Implemented currencies
 */
 
 
@@ -156,7 +156,7 @@ if(count($refnums)){
 
 		echo "<div class='orders-top-elements'>";
 		echo "Order Date:<br><br>";
-		echo "Ref#: <br><br>";
+		echo "Ref#:<br><br>";
 		echo "Ship To:";
 		echo "</div>";
 
@@ -215,6 +215,15 @@ if(count($refnums)){
 			$paymethod = "paypal";
 			$items = $orderinfo['resource']['purchase_units'][0]['items'];
 			$shipping = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['shipping']['value'];
+			$currency = $orderinfo['resource']['purchase_units'][0]['amount']['currency_code'];
+			$custom_id = $orderinfo['resource']['purchase_units'][0]['custom_id'];
+
+			//echo "Custom ID:  $custom_id<br>";
+			list($shippingstr, $phone, $email, $exchangerate) = explode("#", $custom_id);
+			//$breakcustomid = explode("#", $custom_id);
+			//$exchangerate = $breakcustomid[3];
+
+
 		}
 
 
@@ -224,14 +233,34 @@ if(count($refnums)){
 			$itemsbought = $orderinfo['data']['object']['metadata']['purchases'];
 			$shipping = $orderinfo['data']['object']['metadata']['shipping'];
 			$items = explode("&", $itemsbought);
+			$currency = $orderinfo['data']['object']['currency'];
+			$exchangerate = $orderinfo['data']['object']['metadata']['exchangerate'];
 
 		}
 
 
+		if(preg_match("/jpy/i", $currency)){
+			$currsymbol = "&yen;";
+		}else
+		if(preg_match("/inr/i", $currency)){
+			$currsymbol = "&#8377;";
+		}else
+		if(preg_match("/eur/i", $currency)){
+			$currsymbol = "&euro;";
+		}else
+		if(preg_match("/pkr/i", $currency)){
+			$currsymbol = "Rs";
+		}else
+		if(preg_match("/gbp/i", $currency)){
+			$currsymbol = "&pound;";
+		}else{
+			$currsymbol = "&dollar;";
+		}
+
 		foreach($items as $itemkey => $item){
 
 			if($paymethod == "paypal"){
-				$price = $item['unit_amount']['value'];
+				$price = $item['unit_amount']['value'];//price already in buyer's chosen currency
 				$vid = $item['sku'];
 				$quantity = $item['quantity'];
 				$itemname = $item['name'];
@@ -240,7 +269,7 @@ if(count($refnums)){
 				$breakitem = explode("#", $item);				
 				$vid = $breakitem[0];
 				$quantity = $breakitem[1];
-				$price = $breakitem[2];
+				$price = $breakitem[2]*$exchangerate;
 				$itemname = getVariantName($vid, $storeproducts);//function stored in functions.php
 			}
 
@@ -272,8 +301,8 @@ if(count($refnums)){
 
 			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain;'></a></div>";
 			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a></div></div>";
-			echo "<div class='order-item' id='purchprice'>$".number_format($price, 2)."</div>";
-			echo "<div class='order-item' id='purchtotal'>\$".number_format($itemtotal, 2)."</div>";
+			echo "<div class='order-item' id='purchprice'>$currsymbol".number_format($price, 2)."</div>";
+			echo "<div class='order-item' id='purchtotal'>$currsymbol".number_format($itemtotal, 2)."</div>";
 			//echo $item['sku']."<br><br>";
 		}
 
@@ -286,19 +315,19 @@ if(count($refnums)){
 			echo "<div class='order-item' id='trackorder'><a class='trackorder' href='?pg=track&ordernum=$ordernumber'>Track Order</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Subtotal</div>";
-			echo "<div class='order-item'>\$$subtotal</div>";
+			echo "<div class='order-item'>$currsymbol".number_format($subtotal, 2)."</div>";
 
 			echo "<div class='order-item' id='invoice'><a class='invoice' href='invoice.php?refnum=$refnum&ordernum=$ordernumber'>Invoice</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Shipping</div>";
-			echo "<div class='order-item'>\$".number_format($shipping, 2)."</div>";
+			echo "<div class='order-item'>$currsymbol".number_format($shipping, 2)."</div>";
 
 			$grandtotal = $subtotal + $shipping;
 
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'></div>";
-			echo "<div class='order-item'>Grand Total</div>";
-			echo "<div class='order-item'>\$".number_format($grandtotal, 2)."</div>";
+			echo "<div class='order-item'>Grand Total (".strtoupper($currency).")</div>";
+			echo "<div class='order-item'>$currsymbol".number_format($grandtotal, 2)."</div>";
 
 		echo "</div>";
 
