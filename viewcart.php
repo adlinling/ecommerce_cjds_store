@@ -1,6 +1,6 @@
 <?php
 /* 
-Revisions:  Added a "Processing . . please wait" modal notification to the checkout form so user will not think the page has froze up when the Checkout button is pressed
+Revisions:  Added passing of type of currency to checkout.php
 */
 
 
@@ -22,7 +22,7 @@ setcookie("vcid", $viewcart_id, time()+3600*24*7, "/", $host, FALSE);
 
 
 <script src="checkout.js?v=231005_02"></script>
-<link href='imgpopup.css' rel='stylesheet'>
+
 <script>
 function qtyinputchanged(vid){
 
@@ -63,6 +63,8 @@ function qtyinputchanged(vid){
 
 </script>
 
+
+<link href='imgpopup.css' rel='stylesheet'>
 <!-- The View Cart Modal -->
 <div id="viewcartModal" class="modal">
   <div id="viewcartcaption" style="background-color:rgb(0,0,0,0);text-align:center;color:#ffffff;margin:0 auto;"></div>
@@ -72,6 +74,8 @@ function qtyinputchanged(vid){
 
 <div style="text-align:center;padding:10px;background-color:#ffffff">
 <font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Shopping Cart</font>
+<br>
+Shipping will be calculated at checkout
 </div>
 
 <br/>
@@ -94,6 +98,40 @@ if(isset($_COOKIE['cart'])){
 
 
 $items = isset($_COOKIE['cart'])?explode("&", $_COOKIE['cart']):array();
+
+
+$currencystr = isset($_SESSION['currency'])?$_SESSION['currency']:NULL;
+
+
+//Currencies list:  https://stripe.com/docs/currencies
+//$currency = "gbp";//cad, gbp, usd, aud, nzd, hkd, jpy
+
+if($currencystr){
+	list($currency, $exchangerate) = explode(":", $currencystr);
+}else{
+	$currency = "USD";
+	$exchangerate = "1";
+}
+
+
+
+if(preg_match("/jpy/i", $currency)){
+	$currsymbol = "&yen;";
+}else
+if(preg_match("/inr/i", $currency)){
+	$currsymbol = "&#8377;";
+}else
+if(preg_match("/eur/i", $currency)){
+	$currsymbol = "&euro;";
+}else
+if(preg_match("/pkr/i", $currency)){
+	$currsymbol = "Rs";
+}else
+if(preg_match("/gbp/i", $currency)){
+	$currsymbol = "&pound;";
+}else{
+	$currsymbol = "&dollar;";
+}
 
 
 
@@ -131,14 +169,14 @@ if(count($items)){
 			//$breakitem[1] is price
 			//$breakitem[2] is quantity
 
-			if(isset($cartitems[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
+			if(isset($cartitems[$breakitem[0]])){  //each element in the $cartitems array is a quantity
 				$cartitems[$breakitem[0]] = $cartitems[$breakitem[0]] + $breakitem[2];
 			}else{
 				$cartitems[$breakitem[0]] = $breakitem[2];
 			}
 
 
-			if(!isset($prices[$breakitem[0]])){  //each element in the $cartitems array is a quanitiy
+			if(!isset($prices[$breakitem[0]])){  //each element in the $cartitems array is a quantity
 				$prices[$breakitem[0]] =  $breakitem[1];
 			}else{
 
@@ -234,8 +272,8 @@ if(count($items)){
 		<div class='grid-item'><?="<a href='?pg=store&sku=$prodsku'><img src='$img' alt='$img' style='height: 100%; width: 100%; object-fit: contain'></a>";?></div>
  		<div class='grid-item'><div style='padding:20px;'><?="<a class='prodlink' href='?pg=store&sku=$prodsku'>$description</a>";?></div></div>
  		<div class='grid-item'><div class='more' onclick='changeqty(event, "", "<?=$vid;?>#less");'>&nbsp;-&nbsp;</div><input type='text' id='<?=$vid;?>' class='qty' value='<?=$quantity;?>' oninput='qtyinputchanged("<?=$vid;?>");'><div class='less' onclick='changeqty(event, "", "<?=$vid;?>#more");'>&nbsp;+&nbsp;</div></div>
- 		<div class='grid-item'><div><?="\$".$prices[$vid];?></div></div>
- 		<div class='grid-item'><?="\$".$itemtotal;?></div>
+ 		<div class='grid-item'><div><?="$currsymbol".number_format($prices[$vid]*$exchangerate, 2);?></div></div>
+ 		<div class='grid-item'><?="$currsymbol".number_format($itemtotal*$exchangerate, 2);?></div>
 		<?php
 
 
@@ -252,8 +290,8 @@ if(count($items)){
  	<div class="grid-item"></div>
  	<div class="grid-item"></div>
  	<div class="grid-item"></div>
- 	<div class="grid-item">Subtotal</div>
- 	<div class="grid-item"><?="\$".$subtotal;?></div>
+ 	<div class="grid-item">Subtotal (<?=strtoupper($currency);?>)</div>
+ 	<div class="grid-item" title="Shipping will be calculated at checkout"><?="$currsymbol".number_format($subtotal*$exchangerate, 2);?></div>
 
 
 
@@ -264,7 +302,7 @@ if(count($items)){
  	<div class="grid-item">
 
 
-
+	
 	<?php
 		foreach($cartcontents as $cartcontent){
 
@@ -283,6 +321,8 @@ if(count($items)){
 
 
 		echo "<input type='hidden' name='subtotal' value='$subtotal'>";
+		echo "<input type='hidden' name='switchtocurrency' value='$currency'>";
+
 
 
  		echo "<br><br><br><br><br><br><input type='submit' name='checkout' value='Checkout'>";
