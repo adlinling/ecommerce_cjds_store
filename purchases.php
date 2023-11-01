@@ -24,7 +24,7 @@ Revisions:  Implemented currencies
 
 	include "productslist.php";
 	include "functions.php";
-
+	include "currency_exchrates.php";
 
 	include "dbconnect_prepstmt.php";
 
@@ -58,7 +58,7 @@ Revisions:  Implemented currencies
 
 //$query = "SELECT refnum, ordernum, recipient, ship_addr FROM cjorders WHERE account='$account'"; //This will get incomplete orders where the webhook from payment processor has not been received
 
-	$query = "SELECT refnum, ordernum, recipient, ship_addr, json FROM cjorders WHERE account=? AND ordernum<>''";//<>'' means NOT emtpy
+	$query = "SELECT refnum, ordernum, recipient, ship_addr, json FROM cjorders WHERE account=? AND ordernum<>'' ORDER BY refnum DESC";//<>'' means NOT emtpy
 
 	$stmt = $conn->prepare($query); 
 	$stmt->bind_param("s", $account);
@@ -294,13 +294,14 @@ if(count($refnums)){
 				}
 			}
 
+			//$img = "image0.png";
 
 			$itemtotal = $price*$quantity;
 
 			$subtotal = $subtotal + $itemtotal;
 
 			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain;'></a></div>";
-			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a></div></div>";
+			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a><a href='?pg=review&vid=$vid'><div class='leavereview'>Leave A Review</div></a></div></div>";
 			echo "<div class='order-item' id='purchprice'>$currsymbol".number_format($price, 2)."</div>";
 			echo "<div class='order-item' id='purchtotal'>$currsymbol".number_format($itemtotal, 2)."</div>";
 			//echo $item['sku']."<br><br>";
