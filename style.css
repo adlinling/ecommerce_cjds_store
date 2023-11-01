@@ -18,6 +18,26 @@ body
 }
 
 
+.cart{
+  width:25px;
+  height:25px;
+  background-color:#111111;
+}
+
+
+.cart:hover{
+  width:25px;
+  height:25px;
+  background-color:#262626;
+}
+
+
+.carticon{
+  padding:10px 0px 8px;
+  background-color:#222222;
+}
+
+
 
 #page{
    background-color:#ffffff;
@@ -111,7 +131,7 @@ body
 #footer{
   margin: 0 auto;
   //max-width:1200px;
-  height:20vh;
+  height:8vh;
   border 1px white solid;
   background-color:#222222;
   text-align:center;
@@ -142,6 +162,7 @@ font.navigation:hover{
 
 #navigation{
   display:flex;
+  flex-wrap:wrap;
   gap:10px;
   justify-content:right;
   padding-right:20px;
@@ -177,8 +198,13 @@ a:hover {text-decoration:none;color:#ffffff;font-family:San-serif,Verdana,Arial;
 a img {border: none; } 
 
 
-a.prodlink, a.login, a.account, a.trackorder, a.invoice, a.trackingvieworders {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
-a.prodlink:hover, a.login:hover, a.account:hover, a.trackorder:hover, a.invoice:hover, trackingvieworders:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.prodlink, a.login, a.account, a.trackorder, a.invoice, a.trackingvieworders, a.refund {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.prodlink:hover, a.login:hover, a.account:hover, a.trackorder:hover, a.invoice:hover, a.trackingvieworders:hover, a.refund:hover {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+
+
+
+a.shopnow {text-decoration:none;color:#ffffff;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
+a.shopnow:hover {text-decoration:none;color:#ffffff;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;border: none;}
 
 
 a.viewcart {text-decoration:none;color:#000000;font-family:AsapCondensed,San-serif,Verdana,Arial;font-size:1.2em;}
@@ -268,14 +294,13 @@ table, td, th
 }
 
 
-.one, .two {
+.one, .two{
   flex: 1;
   min-width:300px;
   #border: 1px black solid;
   #margin: 4px;
   padding: 10px;
 }
-
 
 
 
@@ -524,7 +549,7 @@ input[type="password"] {
   align-items:center;
   background-color:#ffffff;
 /* Set the width of the 3th column from left */
-  width: 10%;
+  width: 18%;
   flex-grow: 1;
   padding: 10px 0px 10px;
 
@@ -537,7 +562,7 @@ input[type="password"] {
   align-items:center;
   background-color:#ffffff;
 /* Set the width of the 2nd column from left */
-  width: 50%;
+  width: 42%;
   flex-grow: 1;
   #padding-top: 40px;
   padding: 0px 0px 0px;
@@ -568,6 +593,23 @@ input[type="password"] {
    width: 26px;
    padding: 5px 5px 5px;/* Increase middle value to make it wider */
    background-color:#898989;
+   #border: 2px solid orange;
+   border-radius: 50px;
+   font-size:0.8em;
+   color:#ffffff;
+}
+
+
+.leavereview{
+   display:flex;
+   justify-content: center;
+   align-items:center;
+   position: relative;
+   top: 20px;
+   left: 0px;
+   width:100px;
+   padding: 5px 5px 5px;/* Increase middle value to make it wider */
+   background-color:#404040;
    #border: 2px solid orange;
    border-radius: 50px;
    font-size:0.8em;
@@ -798,6 +840,20 @@ input[type="text"] {
    align-items: center;
 }
 
+
+.modalprevimgnext{
+  display:flex;
+  justify-content:space-evenly;
+  align-items:center;
+}
+
+.modalimgcaption{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items: center;
+}
+
 #prevBtndisp,
 #nextBtndisp, #rightBtn, #leftBtn {
     display:flex;
@@ -813,6 +869,25 @@ input[type="text"] {
     color:#000000;
     user-select: none; 
 }
+
+
+
+#prevBtndispmodal,
+#nextBtndispmodal{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size: 24px;
+    //background: none;
+    background-color:#000000;
+    border: none;
+    cursor: pointer;
+    width:20px;
+    height:150px;
+    color:#ffffff;
+    user-select: none; 
+}
+
 
 
 
