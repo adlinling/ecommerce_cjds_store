@@ -6,7 +6,7 @@
 
 <?php
 /*
-Revisions:  Implemented currencies
+Revisions:  Taxes paid are now shown.
 */
 
 
@@ -215,6 +215,7 @@ if(count($refnums)){
 			$paymethod = "paypal";
 			$items = $orderinfo['resource']['purchase_units'][0]['items'];
 			$shipping = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['shipping']['value'];
+			$tax = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['tax_total']['value'];
 			$currency = $orderinfo['resource']['purchase_units'][0]['amount']['currency_code'];
 			$custom_id = $orderinfo['resource']['purchase_units'][0]['custom_id'];
 
@@ -232,6 +233,7 @@ if(count($refnums)){
 			//$stripepurchases = $orderinfo->data->object->metadata->purchases;
 			$itemsbought = $orderinfo['data']['object']['metadata']['purchases'];
 			$shipping = $orderinfo['data']['object']['metadata']['shipping'];
+			$tax = $orderinfo['data']['object']['metadata']['tax'];
 			$items = explode("&", $itemsbought);
 			$currency = $orderinfo['data']['object']['currency'];
 			$exchangerate = $orderinfo['data']['object']['metadata']['exchangerate'];
@@ -300,10 +302,18 @@ if(count($refnums)){
 
 			$subtotal = $subtotal + $itemtotal;
 
+			if(preg_match("/jpy/i", $currency)){
+				$displayprice = round($price);
+				$itemtotal = round($itemtotal);
+			}else{
+				$displayprice = number_format($price, 2);
+				$itemtotal = number_format($itemtotal, 2);
+			}
+
 			echo "<div class='order-item'><a href='?pg=store&sku=$prodsku'><img src='$img' style='height: 100%; width: 100%; object-fit: contain;'></a></div>";
 			echo "<div class='order-item'><div class='itemcount'>$quantity</div><div class='checkoutdescr'><a class='prodlink' href='?pg=store&sku=$prodsku'>$itemname</a><a href='?pg=review&vid=$vid'><div class='leavereview'>Leave A Review</div></a></div></div>";
-			echo "<div class='order-item' id='purchprice'>$currsymbol".number_format($price, 2)."</div>";
-			echo "<div class='order-item' id='purchtotal'>$currsymbol".number_format($itemtotal, 2)."</div>";
+			echo "<div class='order-item' id='purchprice'>$currsymbol".$displayprice."</div>";
+			echo "<div class='order-item' id='purchtotal'>$currsymbol".$itemtotal."</div>";
 			//echo $item['sku']."<br><br>";
 		}
 
@@ -313,22 +323,45 @@ if(count($refnums)){
 		//echo "</pre>";
 
 
+			if(preg_match("/jpy/i", $currency)){
+				$subtotal = round($subtotal);
+				$shipping = round($shipping);
+				$tax = round($tax);
+			}else{
+				$subtotal = number_format($subtotal, 2);
+				$shipping = number_format($shipping, 2);
+				$tax = number_format($tax, 2);
+			}
+
 			echo "<div class='order-item' id='trackorder'><a class='trackorder' href='?pg=track&ordernum=$ordernumber'>Track Order</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Subtotal</div>";
-			echo "<div class='order-item'>$currsymbol".number_format($subtotal, 2)."</div>";
+			echo "<div class='order-item'>$currsymbol".$subtotal."</div>";
 
 			echo "<div class='order-item' id='invoice'><a class='invoice' href='invoice.php?refnum=$refnum&ordernum=$ordernumber'>Invoice</a></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Shipping</div>";
-			echo "<div class='order-item'>$currsymbol".number_format($shipping, 2)."</div>";
+			echo "<div class='order-item'>$currsymbol".$shipping."</div>";
 
-			$grandtotal = $subtotal + $shipping;
+
+			echo "<div class='order-item' ></div>";
+			echo "<div class='order-item'></div>";
+			echo "<div class='order-item'>Tax</div>";
+			echo "<div class='order-item'>$currsymbol".$tax."</div>";
+
+			$grandtotal = $subtotal + $shipping + $tax;
+
+
+			if(preg_match("/jpy/i", $currency)){
+				$grandtotal = round($grandtotal);
+			}else{
+				$grandtotal = number_format($grandtotal, 2);
+			}
 
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'></div>";
 			echo "<div class='order-item'>Grand Total (".strtoupper($currency).")</div>";
-			echo "<div class='order-item'>$currsymbol".number_format($grandtotal, 2)."</div>";
+			echo "<div class='order-item'>$currsymbol".$grandtotal."</div>";
 
 		echo "</div>";
 
