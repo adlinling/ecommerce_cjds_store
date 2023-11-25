@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>
-CJ Dev
+Ecommerce Store - Invoice
 </title>
 <link href='invoice.css' rel='stylesheet'>
 </head>
@@ -11,7 +11,7 @@ CJ Dev
 
 <?php
 /*
-Revisions:  Implemented currency symbols
+Revisions:  Now shows taxes paid
 */
 ?>
 
@@ -72,7 +72,7 @@ $orderdate = date("F j, Y", $refnum);
 
 //echo "Ship To: $recipient $shipaddr<br>";
 
-
+		$tax = 0;
 		$subtotal = 0;
 		$grandtotal = 0;
 		
@@ -94,9 +94,13 @@ $orderdate = date("F j, Y", $refnum);
 			$grandtotal = $orderinfo['resource']['purchase_units'][0]['amount']['value'];
 			$subtotal = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['item_total']['value'];
 			$shippingcost = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['shipping']['value'];
+			$tax = $orderinfo['resource']['purchase_units'][0]['amount']['breakdown']['tax_total']['value'];
 			$items = $orderinfo['resource']['purchase_units'][0]['items'];
-			$currency = "USD";
-			$exchangerate = 1;
+			$currency = $orderinfo['resource']['purchase_units'][0]['amount']['currency_code'];
+
+			$custom_id = $orderinfo['resource']['purchase_units'][0]['custom_id'];
+
+			//echo "Custom ID: $custom_id<br>";
 
 			$recipient = $orderinfo['resource']['purchase_units'][0]['shipping']['name']['full_name'];
 			$street = $orderinfo['resource']['purchase_units'][0]['shipping']['address']['address_line_1'];
@@ -105,9 +109,9 @@ $orderdate = date("F j, Y", $refnum);
 			$zip = $orderinfo['resource']['purchase_units'][0]['shipping']['address']['postal_code'];
 			$country = $orderinfo['resource']['purchase_units'][0]['shipping']['address']['country_code'];
 
-			$custom_id = $orderinfo['resource']['purchase_units'][0]['custom_id'];
-			$breakcustom = explode("#", $custom_id);
-			$shippingmethod = $breakcustom[0];
+			list($shippingmethod, $phone, $email, $exchangerate) = explode("#", $custom_id);
+
+
 		}
 
 
@@ -115,10 +119,11 @@ $orderdate = date("F j, Y", $refnum);
 
 			$payprocessor = "stripe";
 			$subtotal = $orderinfo['data']['object']['metadata']['subtotal'];
+			$tax = $orderinfo['data']['object']['metadata']['tax'];
 			$currency = $orderinfo['data']['object']['currency'];
 			$exchangerate = $orderinfo['data']['object']['metadata']['exchangerate'];
 			$shippingcost = $orderinfo['data']['object']['metadata']['shipping'];
-			$grandtotal = $subtotal + $shippingcost;
+			$grandtotal = $subtotal + $shippingcost + $tax;
 			$itemsbought = $orderinfo['data']['object']['metadata']['purchases'];
 			$items = explode("&", $itemsbought);
 
@@ -183,9 +188,12 @@ $orderdate = date("F j, Y", $refnum);
 
 
 <div class="invoice-title">
-Ecommerestore.com<br>
+Ecommerce Store<br>
+ecommercestore.com<br><br>
 123 Street<br>
 Big City, State, 39283<br><br>
+
+
 Invoice for Order #<?php echo $ordernum;?><br>
 Print this page for your records<br><br>
 </div>
@@ -273,15 +281,23 @@ foreach($items as $itkey => $item){
 	if($payprocessor == "paypal"){
 		//$itemname = $item['name'];
 		$itemprice = $item['unit_amount']['value'];
+		$convertedprice = $itemprice;
 		//$itemquantity = $item['quantity'];
 	}else{
 		$breakitem = explode("#", $item);
 		$itemprice = $breakitem[2];
+		$convertedprice = $itemprice*$exchangerate;
 	}
 
-	$convertedprice = $itemprice*$exchangerate;
 
-	echo "$currsymbol".number_format($convertedprice, 2)."<br><br>";
+	if(preg_match("/jpy/i", $currency)){
+		$displayprice = round($convertedprice);
+	}else{
+		$displayprice = number_format($convertedprice, 2);
+	}
+
+
+	echo "$currsymbol".$displayprice."<br><br>";
 }
 
 ?>
@@ -345,6 +361,7 @@ echo $countries[$country_bill]."<br>";
 <?php
 echo "Subtotal:<br>";
 echo "Shipping:<br>";
+echo "Tax:<br>";
 echo "<br>";
 echo "<b>Grand Total (".strtoupper($currency)."):</b>";
 ?>
@@ -354,10 +371,26 @@ echo "<b>Grand Total (".strtoupper($currency)."):</b>";
 <div class="payment-totals">
 
 <?php
-echo "$currsymbol".number_format($subtotal, 2)."<br>";
-echo "$currsymbol".number_format($shippingcost, 2)."<br>";
-echo "---------<br>";
-echo "<b>$currsymbol".number_format($grandtotal, 2)."</b>";
+
+	if(preg_match("/jpy/i", $currency)){
+		$shippingcost = round($shippingcost);
+		$tax = round($tax);
+		$subtotal = round($subtotal);
+		$grandtotal = round($grandtotal);
+	}else{
+		$shippingcost = number_format($shippingcost, 2);
+		$tax = number_format($tax, 2);
+		$subtotal = number_format($subtotal, 2);
+		$grandtotal = number_format($grandtotal, 2);
+	}
+
+
+
+echo "$currsymbol".$subtotal."<br>";
+echo "$currsymbol".$shippingcost."<br>";
+echo "$currsymbol".$tax."<br>";
+echo "<hr>";
+echo "<b>$currsymbol".$grandtotal."</b>";
 ?>
 </div>
 
