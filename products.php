@@ -125,18 +125,12 @@ if($sku){
 		//If there are duplicate image urls, this will result in missing keys
 		$prodimagesbadkeys = array_unique($prodimagesbadkeys);
 
-		//echo "<pre>";
-		//print_r($prodimagesbadkeys);
-		//echo "</pre>";
 
 		//Make a new images array that has the keys reset to 0, 1, 2 . . . 
 		foreach($prodimagesbadkeys as $prodimage){
 			$productimages[] = $prodimage;
 		}
 
-		//echo "<pre>";
-		//print_r($productimages);
-		//echo "</pre>";
 
 
 		ksort($variants);//Short buy array index name.  krsort() - Sorts an array by key in descending order
