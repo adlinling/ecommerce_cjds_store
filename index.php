@@ -200,12 +200,6 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "viewcart"){
 		include "viewcart.php";
 	}else
-	if($page == "emptycart"){
-		include "emptycart.php";
-	}else
-	if($page == "deleteitems"){
-		include "deleteitems.php";
-	}else
 	if($page == "checkout"){
 		include "checkout.php";
 	}else
@@ -223,9 +217,6 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	}else
 	if($page == "refund"){
 		include "refund.php";
-	}else
-	if($page == "tutorials"){
-		include "tutorials.php";
 	}else
 	if($page == "register"){
 		include "register.php";
