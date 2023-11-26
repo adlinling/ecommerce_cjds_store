@@ -59,7 +59,7 @@ if($hourslapsed > $frequency){
 	// set API Endpoint and access key (and any options of your choice)
 	$endpoint = 'live';
 	$access_key = '[your API key]';
-	$currencies = "CAD,AUD,GBP,EUR,JPY,INR,PKR,NZD";//Paypal does not support PKR https://developer.paypal.com/docs/reports/reference/paypal-supported-currencies/
+	$currencies = "CAD,AUD,GBP,EUR,JPY,INR,NZD";//Paypal does not support PKR https://developer.paypal.com/docs/reports/reference/paypal-supported-currencies/
 
 
 	$url = "http://apilayer.net/api/live?access_key=$access_key&currencies=$currencies&source=USD&format=1";
