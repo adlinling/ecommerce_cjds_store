@@ -1,4 +1,8 @@
 <?php
+/*
+Revisions:  Change homepage layout.  Moved 'main' div into if($page){echo "<div class='main'>";}
+*/
+
 session_start();
 
 if(isset($_GET['sessionid'])){
@@ -14,25 +18,59 @@ if(isset($_GET['sessionid'])){
 //echo "$thisfile<br/>";
 //$currentdir = basename(dirname(__FILE__));
 
+$page = isset($_GET['pg'])?$_GET['pg']:NULL;
+
 ?>
 
 <!DOCTYPE HTML>
+
+<html>
 <head>
 <title>
-CJ Dev
+Ecommerce Store
+<?php
+
+if(!$page){
+  $pagename = "";
+}else
+if($page == "viewcart"){
+ $pagename = " - Cart";
+}else{
+  $pagename = " - ".ucfirst($page);
+}
+
+echo $pagename;
+
+?>
 </title>
-<link href='style.css' rel='stylesheet'>
+
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<?php include "stylesheet.php";?>
+<link href='searchbox.css?v=0.0.1' rel='stylesheet'>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<?php
+if($page == "store"){
+	echo "<link href='imgpopup.css' rel='stylesheet'>";
+}
+?>
+
 </head>
+
 
 <body>
 
 
+<div id="page">
+
 <div id="header">
 
 
-<div id="logo">
-<a href="#"><font id="storename">CJ Dev</font></a></a>
-</div>
+<?php
+include "logo.php";
+?>
 
 </div>
 
@@ -42,11 +80,14 @@ CJ Dev
 include "navigation.php";
 ?>
 
-<div class="main">
+
 
 <?php
 
-$page = isset($_GET['pg'])?$_GET['pg']:NULL;
+
+if($page){
+	echo "<div class='main'>";
+}
 
 
 if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
@@ -56,6 +97,9 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	}else
 	if($page == "track"){
 		include "track.php";
+	}else
+	if($page == "maillist"){
+		include "maillist.php";
 	}else
 	if($page == "invoice"){
 		include "invoice.php";
@@ -87,8 +131,11 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "purchased"){
 		include "purchased.php";
 	}else
-	if($page == "storetest"){
-		include "storetest.php";
+	if($page == "review"){
+		include "review.php";
+	}else
+	if($page == "search"){
+		include "search.php";
 	}else
 	if($page == "tos"){
 		include "tos.php";
@@ -99,8 +146,18 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "refund"){
 		include "refund.php";
 	}else
-	if($page == "updateemail"){
-		include "updateemail.php";
+	if($page == "storemanager" && (isset($_SESSION['username']) || isset($_COOKIE['username']))){
+		//echo $_COOKIE['username']."<br>";
+		include "storemanager.php";
+	}else
+	if($page == "addproduct" && (isset($_SESSION['username']) || isset($_COOKIE['username']))){
+		include "addproduct.php";
+	}else
+	if($page == "editproduct" && (isset($_SESSION['username']) || isset($_COOKIE['username']))){
+		include "editproduct.php";
+	}else
+	if($page == "deleteprod" && (isset($_SESSION['username']) || isset($_COOKIE['username']))){
+		include "deleteproduct.php";
 	}else
 	if($page == "settings" && (isset($_SESSION['username']) || isset($_COOKIE['username']))){
 	//if($page == "settings"){
@@ -122,8 +179,8 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "activation"){
 		include "activation.php";
 	}else
-	if($page == "links"){
-		include "links.php";
+	if($page == "maillist"){
+		include "maillist.php";
 	}else
 	if($page == "resendactivation"){
 		include "resendactivation.php";
@@ -155,8 +212,8 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	if($page == "purchased"){
 		include "purchased.php";
 	}else
-	if($page == "storetest"){
-		include "storetest.php";
+	if($page == "search"){
+		include "search.php";
 	}else
 	if($page == "lstdw"){
 		include "lastdrawscript.php";
@@ -184,31 +241,41 @@ if(isset($_COOKIE['session_id']) || isset($_SESSION['session_id'])){
 	}else
 	if($page == "resetpw"){
 		include "resetpw.php";
-	}else
-	if(preg_match("/vfs[0-9]+/", $page, $pgmatch)){
-		include "vidsforsale.php";
 	}else{
 		include "loggedout.php";
 	}
 }
 
+
+if($page){
+	echo "</div><!-- main-->";
+}
+
 ?>
 
 
-</div>
+
 
 <div id="footer">
-Copyright &copy; 2023 SSP All Rights Reserved
+
+<?php
+
+if($page != "maillist" && $page != "checkout"){
+	include "subscribe.php";
+}
+?>
+
+Copyright &copy; 2023 Superlative Consumer Goods
 
 <br><br>
 
 <a href="?pg=tos">Terms of Service</a> | <a href="?pg=refund">Refund Policy</a> | <a href="?pg=privacy">Privacy Policy</a>
 
-<br><br>
 
-</div>
+</div><!-- footer-->
 
 
+</div><!-- page-->
 
 </body>
-</HTML>
+</html>
