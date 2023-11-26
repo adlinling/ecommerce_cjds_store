@@ -20,7 +20,6 @@
 }
 
 
-
 .imgchoicecontainer{
    display:flex;
    flex-wrap:wrap;
@@ -81,8 +80,6 @@ textarea{
   align-items:center;
   padding:0px 10px 0px 0px; /*Top Right Left Bottom*/
 }
-
-
 
 
 .addprodfields{
@@ -170,11 +167,6 @@ if($sku){
 
 		$data = $result->fetch_all(MYSQLI_ASSOC);
 		
-
-		//echo "<pre>";
-		//print_r($data);
-		//echo "</pre>";
-
 
 		$prodtitle = str_replace($find, $replace, $data[0]['title']);
 		$prodimg = $data[0]['image'];
