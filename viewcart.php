@@ -21,7 +21,7 @@ setcookie("vcid", $viewcart_id, time()+3600*24*7, "/", $host, FALSE);
 ?>
 
 
-<script src="checkout.js?v=231005_02"></script>
+<script src="checkout.js?v=0.0.1"></script>
 
 <script>
 function qtyinputchanged(vid){
@@ -82,18 +82,6 @@ Shipping will be calculated at checkout
 <div style='background-color:#ffffff;padding:10px;'>
 
 <?php
-
-
-/*
-if(isset($_COOKIE['cart'])){
-	print_r($_COOKIE['cart']);
-	echo "<br><br>";
-	echo "<a href='?pg=emptycart'>Empty Cart</a> ";
-}else{
-	echo "Cart is empty";
-}
-*/
-
 
 
 
