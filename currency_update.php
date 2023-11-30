@@ -128,11 +128,12 @@ if($hourslapsed > $frequency){
 
 		// Check for errors and affected rows
 		if ($stmt->error) {
-			die("Error during execution: " . $stmt->error);
+			//die("Error during execution: " . $stmt->error);
+			$string .= "Error during execution: " . $stmt->error."<br>";
 		}
 
 		$affectedRows = $stmt->affected_rows;
-		$string .= "Number of affected rows: " . $affectedRows;
+		$string .= "Number of affected rows: " . $affectedRows."<br><br>";
 		$stmt->close();
 	}
 
@@ -143,6 +144,8 @@ if($hourslapsed > $frequency){
 
 
 $conn->close();
+
+$string .= "<br><br>\n\n";
 
 file_put_contents("debugging_currency_update.htm", $string, FILE_APPEND);
 
