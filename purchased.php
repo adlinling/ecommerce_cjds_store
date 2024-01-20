@@ -185,10 +185,6 @@ if($paymentprocessor == "stripe"){
 	$skupurchasedstring = isset($_GET['skus'])?$_GET['skus']:"";
 }
 
-
-
-
-
 //echo $skupurchasedstring."<br>";
 
 echo "<div class='productgridalsolike'>";
@@ -210,21 +206,27 @@ foreach($storeproducts as $sku => $prodjson){
 
 }
 
-echo "</div>";
-
 ?>
-</div>
+</div><!--class productgridalsolike-->
 
+
+</div>
 
 
 <?php
 
 //Start of Google Analytics purchase event
-$purchasearray = json_decode($jsonofpurchase, true);
+if(preg_match("/GAdata/", $jsonofpurchase)){
+	//echo "JSON is self generated data<br>";
+	$GAdata = $jsonofpurchase;
+}else{
+	$purchasearray = json_decode($jsonofpurchase, true);
 
-//echo "<pre>";
-//print_r($purchasearray);
-//echo "</pre>";
+	//echo "<pre>";
+	//print_r($purchasearray);
+	//echo "</pre>";
+}
+
 
 $items = "";
 $ordervalue = 0;
@@ -233,26 +235,35 @@ $shipping = 0;
 $currency = "";
 $referenceid = "";
 
-
 $GAitemsarray = array();
 
-
-//Stripe
+//Stripe, item prices in the JSON are in USD.  Shipping, tax and $ordervalue are in the buyer's chosen currency.  You have to convert them to USD by dividing by exchange rate
 if(isset($purchasearray['data']['object']['metadata']['purchases'])){
 
-
 	$items = explode("&", $purchasearray['data']['object']['metadata']['purchases']);
+	$exchangerate = $purchasearray['data']['object']['metadata']['exchangerate'];
+
+
+	$currency = $purchasearray['data']['object']['currency'];
+
+	//echo "Currency: $currency<br>";
 
 	$ordervalue = $purchasearray['data']['object']['amount']/100;
-	$ordervalue = round($ordervalue, 2);
-
 
 	$shipping = $purchasearray['data']['object']['metadata']['shipping'];
+	$tax = $purchasearray['data']['object']['metadata']['tax'];
+
+	if(!preg_match("/USD/i", $currency)){
+		$ordervalue = $ordervalue/$exchangerate;
+		$shipping = $shipping/$exchangerate;
+		$tax = $tax/$exchangerate;
+	}
+
+	$ordervalue = round($ordervalue, 2);
+	$shipping = round($shipping, 2);
+	$tax = round($tax, 2);
 
 
-
-	//$tax = $purchasearray['resource']['purchase_units'][0]['amount']['breakdown']['tax_total']['value'];
-	$currency = $purchasearray['data']['object']['currency'];
 	$referenceid = $purchasearray['data']['object']['metadata']['reference_id'];
 
 
@@ -263,7 +274,10 @@ if(isset($purchasearray['data']['object']['metadata']['purchases'])){
 		$vid = $itempieces[0];
 		$productname = getVariantName($vid, $storeproducts);
 		$quantity = $itempieces[1];
-		$price = round($itempieces[2], 2);
+
+		$price = $itempieces[2];
+
+		$price = round($price, 2);		
 		$price = (string) $price;
 
 		$GAitemsarray[] = array(
@@ -294,8 +308,6 @@ if(isset($purchasearray['data']['object']['metadata']['purchases'])){
 
 }
 
-
-
 //Paypal
 if(isset($purchasearray['resource']['purchase_units'][0]['items'])){
 	
@@ -314,7 +326,6 @@ if(isset($purchasearray['resource']['purchase_units'][0]['items'])){
 
 	foreach($paypalitemsarr as $paypalkey => $paypalitem){
 
-
 		$vid = $paypalitem['sku'];
 		$productname = $paypalitem['name'];
 		$quantity = $paypalitem['quantity'];
@@ -324,7 +335,7 @@ if(isset($purchasearray['resource']['purchase_units'][0]['items'])){
 
 			"item_id" => $vid,
 			"item_name" => substr($productname, 0, 50),
-			"affiliation" => "Stripe",
+			"affiliation" => "Google Merchandise Store",
 			"coupon" => "none",
 			"discount" => 0,
 			"index" => $paypalkey,
@@ -350,11 +361,78 @@ if(isset($purchasearray['resource']['purchase_units'][0]['items'])){
 
 
 
+//Self generated Google Analytics data
+if(isset($GAdata)){
+
+
+
+	list($label, $items, $subtotal, $currency, $exchangerate, $tax, $shipping) = explode("#", $GAdata);
+
+	$itemsjson = urldecode($items);
+	$itemsarray = json_decode($itemsjson);
+
+
+	//echo "Items $itemsjson<br>";
+	//echo "Subtotal $subtotal<br>";
+	//echo "Currency $currency<br>";
+	//echo "Exchange rate $exchangerate<br>";
+	//echo "Tax $tax<br>";
+	//echo "shipping $shipping<br>";
+	//echo "Length of data string: ".strlen($GAdata)."<br>";
+
+	if(!preg_match("/USD/i", $currency)){
+		//echo "Currency not in USD<br>";
+		$subtotal = $subtotal/$exchangerate;
+		$tax = round($tax/$exchangerate, 2);
+		$shipping = round($shipping/$exchangerate, 2);
+	}
+	
+	$ordervalue = $subtotal + $tax + $shipping;
+
+	$referenceid = $referencecode;
+
+	//echo "<pre>";
+	//print_r($itemsarray);
+	//echo "</pre>";
+
+	foreach($itemsarray as $itemkey => $item){
+		
+		//$price is already in USD.  No need to divide by $exchangerate
+		list($productname, $vid, $quantity, $price) = explode("#", $item);
+
+		$GAitemsarray[] = array(
+
+			"item_id" => $vid,
+			"item_name" => substr($productname, 0, 50),
+			"affiliation" => "Stripe",
+			"coupon" => "none",
+			"discount" => 0,
+			"index" => $itemkey,
+			"item_brand" => "Google",
+			"item_category" => "Apparel",
+			"item_category2" => "Adult",
+			"item_category3" => "Shirts",
+			"item_category4" => "Crew",
+			"item_category5" => "Short sleeve",
+			"item_list_id" => "related_products",
+			"item_list_name" => "Related Products",
+			"item_variant" => "green",
+			"location_id" => "ChIJIQBpAG2ahYAR_6128GcTUEo",
+			"price" => $price,
+			"quantity" => $quantity	
+
+			);
+	}
+}
+
+
+
 	$ordervalue = round($ordervalue, 2);
 	$ordervalue = (string) $ordervalue;//Not converting to a string will result in really long decimal places from $output .= json_encode($GAarray, JSON_PRETTY_PRINT)
 	$shipping = (string) $shipping;
+	$tax = (string) $tax;
 
-	$currency = strtoupper($currency);
+	$currency = "USD";//Want to send all values in USD to Google Analytics
 
 	$GAarray = array(
 		"transaction_id" => $referenceid,
@@ -379,8 +457,9 @@ if(isset($purchasearray['resource']['purchase_units'][0]['items'])){
 
 	$output .= json_encode($GAarray, JSON_PRETTY_PRINT) . ");\n";
 	$output .= "</script>\n";
-
 	echo $output;
 
 //End of Google Analytics purchase event
+
+
 ?>
