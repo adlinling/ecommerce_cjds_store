@@ -78,7 +78,7 @@ if($isowner){
 
 <form action="" method="POST" class="formcontainer">
 
-<div class="fields"><div class="addprodfieldnames" title="The SPU shown on the product page.">SKU:</div><input type="text" name="sku"></div>
+<div class="fields"><div class="addprodfieldnames" title="The SPU code shown on the product page.">SKU:</div><input type="text" name="sku"></div>
 <div class="fields"><div class="addprodfieldnames" title="The profit you want to make">Markup:</div><input id="markup" type="text" name="markup" value="10" oninput="onlyfloat('markup', 2);"></div>
 <div class="fields">&nbsp;<input type="submit" name="submit" value="Submit"></div>
 </form>
