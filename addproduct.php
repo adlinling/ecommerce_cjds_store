@@ -18,9 +18,7 @@
 .info{
   margin:0 auto;
   max-width:500px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  text-align:center;
 }
 
 .fields{
@@ -59,16 +57,35 @@ input, textarea {
 
 
 <div style="text-align:center;padding:10px;background-color:#ffffff">
-<font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Add Product</font>
+<font style="font-family:BebasNeue,San-serif,Verdana,Arial;color:#000000;font-size:1.9em;">Add CJ Product</font>
 </div>
+
+
+<?php
+include_once "functions.php";
+include "credentials.php";
+
+
+$isowner = FALSE;
+if($_COOKIE['username'] == $owneremail){
+	$isowner = TRUE;
+}
+
+
+if($isowner){
+?>
 
 
 <form action="" method="POST" class="formcontainer">
 
-<div class="fields"><div class="addprodfieldnames" title="The SKU of the product you want to add from CJDropshipping">SKU:</div><input type="text" name="sku"></div>
+<div class="fields"><div class="addprodfieldnames" title="The SPU shown on the product page.">SKU:</div><input type="text" name="sku"></div>
 <div class="fields"><div class="addprodfieldnames" title="The profit you want to make">Markup:</div><input id="markup" type="text" name="markup" value="10" oninput="onlyfloat('markup', 2);"></div>
 <div class="fields">&nbsp;<input type="submit" name="submit" value="Submit"></div>
 </form>
+
+<?php
+}//if($isowner){
+?>
 
 
 <div class="info">
@@ -82,10 +99,10 @@ if(isset($_POST['submit'])){
 
 	if(!empty($_POST['sku']) && !empty($_POST['markup'])){
 
-		$sku = $_POST['sku'];
+		$sku = trim($_POST['sku']);
 		$markup = $_POST['markup'];
 
-		include "functions.php";
+
 
 
 		//echo "<hr>";
@@ -148,25 +165,28 @@ if(isset($_POST['submit'])){
 
 		$image = $storefrontimage; 
 		$imageset = $imagestring;
+		$slug = str_replace(" ", "_", strtolower($title));
 
 
 
 		$details = htmlspecialchars($descriptext);
 
 		$vieworder = "";
+		$whatsincluded = "";
 
-		$query = "INSERT INTO cjproducts (title, listorder, sku, json, image, imageset, markup, details) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		$query = "INSERT INTO cjproducts (title, listorder, slug, sku, json, image, firstimg, imageset, included, markup, details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		//$title, $sku, $json, $image, $imageset, $markup, $details
 
 		$stmt = $conn->prepare($query);
-		$stmt->bind_param("ssssssss", $title, $listorder, $sku, $json, $image, $imageset, $markup, $details);
+		$stmt->bind_param("sssssssssss", $title, $listorder, $slug, $sku, $json, $image, $storefrontimage, $imageset, $whatsincluded, $markup, $details);
 
 
 		$result = $stmt->execute();
 
 		if($result){
-			echo "Data successfully inserted<br>";
+			echo "Data successfully inserted<br><br>";
+			echo "<a class='prodlink' href='?pg=storemanager'>OK</a>";
 		}else{
 			echo "Failed to insert data<br>";
 		}
